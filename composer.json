@@ -1,5 +1,5 @@
 {
-    "name": "jbelien/OVH-Monitoring",
+    "name": "jbelien/ovh-monitoring",
     "description": "OVH VPS/Cloud Monitoring via OVH API",
     "type": "project",
     "license": "GPL-3.0",
