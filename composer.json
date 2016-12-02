@@ -1,0 +1,14 @@
+{
+    "name": "jbelien/OVH-Monitoring",
+    "description": "OVH VPS/Cloud Monitoring via OVH API",
+    "type": "project",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Jonathan Beliën"
+        }
+    ],
+    "require": {
+        "ovh/ovh": "^2.0"
+    }
+}
