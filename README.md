@@ -16,3 +16,8 @@ application_secret = your_application_secret
 endpoint           = ovh-eu
 consumer_key       = your_consumer_key
 ```
+
+## Installation
+```
+composer require jbelien/ovh-monitoring
+```
