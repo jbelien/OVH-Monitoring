@@ -1,5 +1,5 @@
 <?php
-require '/var/www/cdn/inc/vendor/autoload.php';
+require 'vendor/autoload.php';
 
 $ini = parse_ini_file('monitoring.ini');
 $ovh = new \Ovh\Api( $ini['application_key'], $ini['application_secret'], $ini['endpoint'], $ini['consumer_key'] );
@@ -10,7 +10,7 @@ $ovh = new \Ovh\Api( $ini['application_key'], $ini['application_secret'], $ini['
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>VPS Monitoring</title>
+    <title>OVH Monitoring</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
   </head>
   <body>
@@ -58,11 +58,13 @@ foreach ($vps as $v) {
       $diskMax = $ovh->get('/vps/'.$v.'/disks/'.$d.'/monitoring', array( 'period' => 'today', 'type' => 'max' ));
       $diskUsed = $ovh->get('/vps/'.$v.'/disks/'.$d.'/monitoring', array( 'period' => 'today', 'type' => 'used' ));
 
-      $lastMax = array_pop($diskMax['values']);
-      $lastUsed = array_pop($diskUsed['values']);
+      //var_dump($diskMax);
+
+      $lastMax = array_pop($diskMax['values']); while(is_null($lastMax['value'])) { $lastMax = array_pop($diskMax['values']); }
+      $lastUsed = array_pop($diskUsed['values']); while(is_null($lastUsed['value'])) { $lastUsed = array_pop($diskUsed['values']); }
 
       $prevUsed = array_pop($diskUsed['values']);
-      $diff = ($lastUsed['value'] - $prevUsed['value']); if ($diff > 0) { $diff = '+'.$diff; }
+      $diff = ($lastUsed['value'] - $prevUsed['value']);
       $diffTime = ($lastUsed['timestamp'] - $prevUsed['timestamp']) / 60;
 
       $pct = ($lastUsed['value'] / $lastMax['value']) * 100;
@@ -101,7 +103,7 @@ foreach ($vps as $v) {
     $lastUsed = array_pop($cpuUsed['values']); while(is_null($lastUsed['value'])) { $lastUsed = array_pop($cpuUsed['values']); }
 
     $prevUsed = array_pop($cpuUsed['values']);
-    $diff = ($lastUsed['value'] - $prevUsed['value']); if ($diff > 0) { $diff = '+'.$diff; }
+    $diff = ($lastUsed['value'] - $prevUsed['value']);
     $diffTime = ($lastUsed['timestamp'] - $prevUsed['timestamp']) / 60;
 
     $pct = ($lastUsed['value'] / $lastMax['value']) * 100;
@@ -135,7 +137,7 @@ foreach ($vps as $v) {
     $lastUsed = array_pop($memUsed['values']); while(is_null($lastUsed['value'])) { $lastUsed = array_pop($memUsed['values']); }
 
     $prevUsed = array_pop($memUsed['values']);
-    $diff = ($lastUsed['value'] - $prevUsed['value']); if ($diff > 0) { $diff = '+'.$diff; }
+    $diff = ($lastUsed['value'] - $prevUsed['value']);
     $diffTime = ($lastUsed['timestamp'] - $prevUsed['timestamp']) / 60;
 
     $pct = ($lastUsed['value'] / $lastMax['value']) * 100;
@@ -163,20 +165,6 @@ foreach ($vps as $v) {
 ?>
         </tbody>
       </table>
-<!--
-      <hr>
-      <div class="row">
-        <div class="col-sm-4">
-          <canvas id="chart-disks" style="width: 100%; height: 250px;"></canvas>
-        </div>
-        <div class="col-sm-4">
-          <canvas id="chart-cpu" style="width: 100%; height: 250px;"></canvas>
-        </div>
-        <div class="col-sm-4">
-          <canvas id="chart-mem" style="width: 100%; height: 250px;"></canvas>
-        </div>
-      </div>
--->
       <h1>Cloud Monitoring</h1>
 <?php
 $project = $ovh->get('/cloud/project');
@@ -224,7 +212,7 @@ foreach ($project as $p) {
     $lastUsed = array_pop($cpuUsed['values']);
 
     $prevUsed = array_pop($cpuUsed['values']);
-    $diff = ($lastUsed['value'] - $prevUsed['value']); if ($diff > 0) { $diff = '+'.$diff; }
+    $diff = ($lastUsed['value'] - $prevUsed['value']);
     $diffTime = ($lastUsed['timestamp'] - $prevUsed['timestamp']) / 60;
 
     $pct = ($lastUsed['value'] / $lastMax['value']) * 100;
@@ -248,7 +236,7 @@ foreach ($project as $p) {
     $lastUsed = array_pop($memUsed['values']);
 
     $prevUsed = array_pop($memUsed['values']);
-    $diff = ($lastUsed['value'] - $prevUsed['value']); if ($diff > 0) { $diff = '+'.$diff; }
+    $diff = ($lastUsed['value'] - $prevUsed['value']);
     $diffTime = ($lastUsed['timestamp'] - $prevUsed['timestamp']) / 60;
 
     $pct = ($lastUsed['value'] / $lastMax['value']) * 100;
@@ -309,71 +297,6 @@ foreach ($project as $p) {
 }
 ?>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-    <script src="/cdn/js/chart.js/2.4/Chart.bundle.min.js"></script>
-    <script>
-/*
-      $(document).ready(function() {
-        var ctx = document.getElementById("chart-disks");
-        var myChart = new Chart(ctx, {
-          type: 'line',
-          data: {
-            datasets: [
-<?php
-//foreach ($vps as $v) {
-//  $disks = $ovh->get('/vps/'.$v.'/disks');
-//  foreach ($disks as $i => $d) {
-//    $_d = $ovh->get('/vps/'.$v.'/disks/'.$d);
-//    $__d = $ovh->get('/vps/'.$v.'/disks/'.$d.'/monitoring', array( 'period' => 'lastday', 'type' => 'used' ));
-//    echo '              ';
-//    echo '{';
-//      echo 'label:"'.$v.' #'.($i+1).'",';
-//      echo 'fill:false,';
-//      echo 'steppedLine:true,';
-//      echo 'data:[';
-//      foreach ($__d['values'] as $j => $val) {
-//        if ($j > 0) { echo ','; }
-//        echo '{';
-//          echo 'x:new Date('.($val['timestamp']*1000).'),';
-//          echo 'y:'.($val['value'] / ($_d['size'] * 1024) * 100);
-//        echo '}';
-//      }
-//      echo ']';
-//    echo '},'.PHP_EOL;
-//  }
-//}
-?>
-            ]
-          },
-          options: {
-            responsive: true,
-            title: {
-              display: true,
-              text: "Disks usage"
-            },
-            legend: {
-              display: false
-            },
-            elements: {
-              point: {
-                radius: 0
-              }
-            },
-            scales: {
-              xAxes: [{
-                type: "time",
-              }],
-              yAxes: [{
-                ticks: {
-                  beginAtZero:true
-                }
-              }]
-            }
-          }
-        });
-      });
-*/
-    </script>
   </body>
 </html>
