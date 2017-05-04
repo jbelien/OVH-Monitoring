@@ -1,0 +1,7 @@
+#refresh {
+  color: #fff;
+  text-decoration: none;
+}
+#refresh:hover {
+  color: #ccc;
+}
