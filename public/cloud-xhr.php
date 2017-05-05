@@ -22,10 +22,13 @@ if (isset($_GET['cpu'])) {
         $max = $ovh->get('/cloud/project/'.$p->project_id.'/instance/'.$i->id.'/monitoring', array( 'period' => 'today', 'type' => 'cpu:max' ));
         $used = $ovh->get('/cloud/project/'.$p->project_id.'/instance/'.$i->id.'/monitoring', array( 'period' => 'today', 'type' => 'cpu:used' ));
 
-        $lastMax = end($max['values']);
-        $lastUsed = end($used['values']);
+        $lastMax = array_pop($max['values']);
+        $lastUsed = array_pop($used['values']);
 
-        $result[$p->project_id][$i->id] = array($lastUsed['value'], $used['unit'], round($lastUsed['value'] / $lastMax['value'] * 100));
+        $prevUsed = array_pop($used['values']);
+        $status = (round($lastUsed['value']) > round($prevUsed['value']) ? 1 : (round($lastUsed['value']) < round($prevUsed['value']) ? -1 : 0));
+
+        $result[$p->project_id][$i->id] = array($lastUsed['value'], $used['unit'], round($lastUsed['value'] / $lastMax['value'] * 100), $status);
       } catch (Exception $e) {
         $result[$p->project_id][$i->id] = $e->getMessage();
       }
@@ -83,10 +86,13 @@ else if (isset($_GET['ram'])) {
         $max = $ovh->get('/cloud/project/'.$p->project_id.'/instance/'.$i->id.'/monitoring', array( 'period' => 'today', 'type' => 'mem:max' ));
         $used = $ovh->get('/cloud/project/'.$p->project_id.'/instance/'.$i->id.'/monitoring', array( 'period' => 'today', 'type' => 'mem:used' ));
 
-        $lastMax = end($max['values']);
-        $lastUsed = end($used['values']);
+        $lastMax = array_pop($max['values']);
+        $lastUsed = array_pop($used['values']);
 
-        $result[$p->project_id][$i->id] = array($lastUsed['value'], $used['unit'], round($lastUsed['value'] / $lastMax['value'] * 100));
+        $prevUsed = array_pop($used['values']);
+        $status = (round($lastUsed['value']) > round($prevUsed['value']) ? 1 : (round($lastUsed['value']) < round($prevUsed['value']) ? -1 : 0));
+
+        $result[$p->project_id][$i->id] = array($lastUsed['value'], $used['unit'], round($lastUsed['value'] / $lastMax['value'] * 100), $status);
       } catch (Exception $e) {
         $result[$p->project_id][$i->id] = $e->getMessage();
       }

@@ -99,10 +99,23 @@ else if (isset($_GET['cpu'])) {
   $vps = json_decode(file_get_contents($cache));
   foreach ($vps as $v) {
     try {
-      $max = $ovh->get('/vps/'.$v->name.'/use', array( 'type' => 'cpu:max' ));
-      $used = $ovh->get('/vps/'.$v->name.'/use', array( 'type' => 'cpu:used' ));
+      if (substr($v->model->version, 0, 4) === '2014') {
+        $max = $ovh->get('/vps/'.$v->name.'/use', array( 'type' => 'cpu:max' ));
+        $used = $ovh->get('/vps/'.$v->name.'/use', array( 'type' => 'cpu:used' ));
 
-      $result[$v->name] = array($used['value'], $used['unit'], round($used['value'] / $max['value'] * 100));
+        $result[$v->name] = array($used['value'], $used['unit'], round($used['value'] / $max['value'] * 100));
+      } else {
+        $max = $ovh->get('/vps/'.$v->name.'/monitoring', array( 'period' => 'today', 'type' => 'cpu:max' ));
+        $used = $ovh->get('/vps/'.$v->name.'/monitoring', array( 'period' => 'today', 'type' => 'cpu:used' ));
+
+        $lastMax = array_pop($max['values']);
+        $lastUsed = array_pop($used['values']);
+
+        $prevUsed = array_pop($used['values']);
+        $status = (round($lastUsed['value']) > round($prevUsed['value']) ? 1 : (round($lastUsed['value']) < round($prevUsed['value']) ? -1 : 0));
+
+        $result[$v->name] = array($lastUsed['value'], $used['unit'], round($lastUsed['value'] / $lastMax['value'] * 100), $status);
+      }
     } catch (Exception $e) {
       $result[$v->name] = $e->getMessage();
     }
@@ -154,10 +167,23 @@ else if (isset($_GET['ram'])) {
   $vps = json_decode(file_get_contents($cache));
   foreach ($vps as $v) {
     try {
-      $max = $ovh->get('/vps/'.$v->name.'/use', array( 'type' => 'mem:max' ));
-      $used = $ovh->get('/vps/'.$v->name.'/use', array( 'type' => 'mem:used' ));
+      if (substr($v->model->version, 0, 4) === '2014') {
+        $max = $ovh->get('/vps/'.$v->name.'/use', array( 'type' => 'mem:max' ));
+        $used = $ovh->get('/vps/'.$v->name.'/use', array( 'type' => 'mem:used' ));
 
-      $result[$v->name] = array($used['value'], $used['unit'], round($used['value'] / $max['value'] * 100));
+        $result[$v->name] = array($used['value'], $used['unit'], round($used['value'] / $max['value'] * 100));
+      } else {
+        $max = $ovh->get('/vps/'.$v->name.'/monitoring', array( 'period' => 'today', 'type' => 'mem:max' ));
+        $used = $ovh->get('/vps/'.$v->name.'/monitoring', array( 'period' => 'today', 'type' => 'mem:used' ));
+
+        $lastMax = array_pop($max['values']);
+        $lastUsed = array_pop($used['values']);
+
+        $prevUsed = array_pop($used['values']);
+        $status = (round($lastUsed['value']) > round($prevUsed['value']) ? 1 : (round($lastUsed['value']) < round($prevUsed['value']) ? -1 : 0));
+
+        $result[$v->name] = array($lastUsed['value'], $used['unit'], round($lastUsed['value'] / $lastMax['value'] * 100), $status);
+      }
     } catch (Exception $e) {
       $result[$v->name] = $e->getMessage();
     }

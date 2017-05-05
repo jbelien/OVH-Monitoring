@@ -96,10 +96,10 @@ foreach ($project as $p) {
                 <td style="vertical-align: middle;"><?= (isset($i->image) ? $i->image->name : '-') ?></td>
                 <td style="vertical-align: middle;" class="text-nowrap text-right"><?= $i->flavor->disk ?> Go</td>
                 <td style="vertical-align: middle;" class="text-right"><?= $i->flavor->vcpus ?></td>
-                <td style="vertical-align: middle;"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
+                <td style="vertical-align: middle;" class="text-nowrap text-right"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
                 <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#cpu-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
                 <td style="vertical-align: middle;" class="text-nowrap text-right"><?= ($i->flavor->ram / 1000) ?> Go</td>
-                <td style="vertical-align: middle;"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
+                <td style="vertical-align: middle;" class="text-nowrap text-right"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
                 <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#ram-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
               </tr>
 <?php } ?>

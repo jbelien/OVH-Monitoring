@@ -167,7 +167,17 @@ function callBackCPU() {
 
       if (typeof json[name] === "object") {
         $(this).find("td:eq(7)").
-          html("<span title=\"" + Math.round(json[name][0]) + " " + json[name][1] + "\" class=\"" + (json[name][2] < 50 ? "text-success" : (json[name][2] < 75 ? "text-warning" : "text-danger")) + "\">" + json[name][2] + "%</span>")
+          html("<span title=\"" + Math.round(json[name][0]) + " " + json[name][1] + "\" class=\"" + (json[name][2] < 50 ? "text-success" : (json[name][2] < 75 ? "text-warning" : "text-danger")) + "\">" + json[name][2] + "%</span>");
+        if (json[name][3] === -1) {
+          $(this).find("td:eq(7)").
+            append(" <i class=\"fa fa-angle-double-down fa-fw\" aria-hidden=\"true\"></i>");
+        } else if (json[name][3] === 1) {
+          $(this).find("td:eq(7)").
+            append(" <i class=\"fa fa-angle-double-up fa-fw\" aria-hidden=\"true\"></i>");
+        } else {
+          $(this).find("td:eq(7)").
+            append(" <i class=\"fa fa-circle-thin fa-fw\" aria-hidden=\"true\" style=\"visibility: hidden;\"></i>");
+        }
       } else {
         $(this).find("td:eq(7)").
           html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
@@ -192,7 +202,17 @@ function callBackRAM() {
 
       if (typeof json[name] === "object") {
         $(this).find("td:eq(10)").
-          html("<span title=\"" + Math.round(json[name][0]) + " " + json[name][1] + "\" class=\"" + (json[name][2] < 25 ? "text-success" : (json[name][2] < 75 ? "text-warning" : "text-danger")) + "\">" + json[name][2] + "%</span>")
+          html("<span title=\"" + Math.round(json[name][0]) + " " + json[name][1] + "\" class=\"" + (json[name][2] < 25 ? "text-success" : (json[name][2] < 75 ? "text-warning" : "text-danger")) + "\">" + json[name][2] + "%</span>");
+        if (json[name][3] === -1) {
+          $(this).find("td:eq(10)").
+            append(" <i class=\"fa fa-angle-double-down fa-fw\" aria-hidden=\"true\"></i>");
+        } else if (json[name][3] === 1) {
+          $(this).find("td:eq(10)").
+            append(" <i class=\"fa fa-angle-double-up fa-fw\" aria-hidden=\"true\"></i>");
+        } else {
+          $(this).find("td:eq(10)").
+            append(" <i class=\"fa fa-circle-thin fa-fw\" aria-hidden=\"true\" style=\"visibility: hidden;\"></i>");
+        }
       } else {
         $(this).find("td:eq(10)").
           html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
