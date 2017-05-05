@@ -1,19 +1,22 @@
 # OVH-Monitoring
+
 OVH VPS/Cloud Monitoring via [OVH API](https://api.ovh.com/) using PHP.
 
 ## Installation
+
 ```
 composer require jbelien/ovh-monitoring
 ```
 
 ## Configuration
+
 **First step:**
 
 Create credentials : <https://api.ovh.com/createToken/index.cgi?GET=/vps*&GET=/cloud*>
 
 **Second step:**
 
-Create `monitoring.ini` file (next to `monitoring.php` file) with your credentials :
+Create `monitoring.ini` file (next to `public` directory) with your credentials :
 
 ```
 application_key    = your_application_key
