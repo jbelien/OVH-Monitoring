@@ -11,9 +11,7 @@ if (!file_exists($cache) || filemtime($cache) < (time() - 7*24*60*60) || isset($
   $vps = $ovh->get('/vps');
   foreach ($vps as $v) {
     $_v = $ovh->get('/vps/'.$v);
-    $_o = $ovh->get('/vps/'.$v.'/distribution');
-
-    $_v['distribution'] = $_o;
+    $_v['distribution'] = $ovh->get('/vps/'.$v.'/distribution');
 
     $json[] = $_v;
   }
@@ -69,13 +67,13 @@ foreach ($vps as $v) {
             <td class="text-nowrap"><?= $v->model->offer ?><br><em class="small"><?= $v->model->version ?> - <?= $v->model->name ?></em></td>
             <td style="vertical-align: middle;"><?= $v->distribution->name ?></td>
             <td style="vertical-align: middle;" class="text-nowrap"><?= $v->distribution->bitFormat ?> bits</td>
-            <td style="vertical-align: middle;" class="text-nowrap text-right text-xs-right"><?= $v->model->disk ?> Go</td>
+            <td style="vertical-align: middle;" class="text-nowrap text-right"><?= $v->model->disk ?> Go</td>
             <td style="vertical-align: middle;" class="text-nowrap text-right"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#disk-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
-            <td style="vertical-align: middle;" class="text-right text-xs-right"><?= $v->vcore ?></td>
+            <td style="vertical-align: middle;" class="text-right"><?= $v->vcore ?></td>
             <td style="vertical-align: middle;" class="text-nowrap text-right"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#cpu-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
-            <td style="vertical-align: middle;" class="text-nowrap text-right text-xs-right"><?= ($v->memoryLimit / 1024) ?> Go</td>
+            <td style="vertical-align: middle;" class="text-nowrap text-right"><?= ($v->memoryLimit / 1024) ?> Go</td>
             <td style="vertical-align: middle;" class="text-nowrap text-right"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#ram-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
             <td style="vertical-align: middle;" class="text-nowrap">
@@ -98,10 +96,10 @@ foreach ($vps as $v) {
           </tr>
         </tfoot>
       </table>
-    </div>
 
-    <div id="console" class="text-danger small">
-      <ol></ol>
+      <div id="console" class="text-danger small">
+        <ol></ol>
+      </div>
     </div>
 
     <div id="modal" class="modal fade">
