@@ -161,137 +161,6 @@ foreach ($project as $p) {
       <hr>
 <?php
 }
-
-/*
-$project = $ovh->get('/cloud/project');
-foreach ($project as $p) {
-  $_p =  $ovh->get('/cloud/project/'.$p);
-?>
-      <h2 class="mt-3">Project &laquo; <?= $_p['description'] ?> &raquo;</h2>
-      <table class="table table-bordered table-striped table-sm mt-3">
-        <thead class="thead-inverse">
-          <tr>
-            <th>Instance</th>
-            <th>Region</th>
-            <th>Flavor</th>
-            <th>Image</th>
-            <th>Disk</th>
-            <th colspan="2">vCPU(s)</th>
-            <th colspan="2">RAM</th>
-          </tr>
-        </thead>
-        <tbody>
-<?php
-  $instance = $ovh->get('/cloud/project/'.$p.'/instance');
-  foreach ($instance as $i) {
-    try {
-      $_f = $ovh->get('/cloud/project/'.$p.'/flavor/'.$i['flavorId']);
-      $_i = $ovh->get('/cloud/project/'.$p.'/image/'.$i['imageId']);
-    } catch(Exception $e) {
-
-    }
-?>
-          <tr>
-            <th><?= $i['name'] ?><br><small><?= $i['id'] ?></small></th>
-            <td><?= $i['region'] ?></td>
-            <td><?= $_f['type'] ?> - <?= $_f['name'] ?> (<?= $_f['osType'] ?>)</td>
-            <td><?= (isset($_i) ? $_i['name'] : '-') ?></td>
-            <td class="text-nowrap text-xs-right"><?= $_f['disk'] ?> Go</td>
-            <td class="text-xs-right"><?= $_f['vcpus'] ?></td>
-            <td class="text-nowrap">
-<?php
-//  try {
-//    $cpuMax = $ovh->get('/cloud/project/'.$p.'/instance/'.$i['id'].'/monitoring', array( 'period' => 'today', 'type' => 'cpu:max' ));
-//    $cpuUsed = $ovh->get('/cloud/project/'.$p.'/instance/'.$i['id'].'/monitoring', array( 'period' => 'today', 'type' => 'cpu:used' ));
-//
-//    $lastMax = array_pop($cpuMax['values']);
-//    $lastUsed = array_pop($cpuUsed['values']);
-//
-//    $prevUsed = array_pop($cpuUsed['values']);
-//    $diff = ($lastUsed['value'] - $prevUsed['value']);
-//    $diffTime = ($lastUsed['timestamp'] - $prevUsed['timestamp']) / 60;
-//
-//    $pct = ($lastUsed['value'] / $lastMax['value']) * 100;
-//    echo '<span class="text-'.($pct >= 50 ? 'danger' : ($pct >= 25 ? 'warning' : 'success')).'" title="'.date('j M H:i', $lastUsed['timestamp']).' : '.round($lastUsed['value'],2).' '.$cpuUsed['unit'].'">';
-//      echo round($pct, 1).'%';
-//    echo '</span>';
-//    echo ' <strong title="'.sprintf('%+.2f', $diff).' '.$cpuUsed['unit'].' ('.$diffTime.' min.)">('.($lastUsed['value'] > $prevUsed['value'] ? '&nearr;' : ($lastUsed['value'] < $prevUsed['value'] ? '&searr;' : '=')).')</strong>';
-//  } catch (Exception $e) {
-//    //echo '<samp class="small text-danger">'.$e->getMessage().'</samp>';
-//  }
-?>
-            </td>
-            <td class="text-nowrap text-xs-right"><?= ($_f['ram'] / 1000) ?> Go</td>
-            <td class="text-nowrap">
-<?php
-//  try {
-//    $memMax = $ovh->get('/cloud/project/'.$p.'/instance/'.$i['id'].'/monitoring', array( 'period' => 'today', 'type' => 'mem:max' ));
-//    $memUsed = $ovh->get('/cloud/project/'.$p.'/instance/'.$i['id'].'/monitoring', array( 'period' => 'today', 'type' => 'mem:used' ));
-//
-//    $lastMax = array_pop($memMax['values']);
-//    $lastUsed = array_pop($memUsed['values']);
-//
-//    $prevUsed = array_pop($memUsed['values']);
-//    $diff = ($lastUsed['value'] - $prevUsed['value']);
-//    $diffTime = ($lastUsed['timestamp'] - $prevUsed['timestamp']) / 60;
-//
-//    $pct = ($lastUsed['value'] / $lastMax['value']) * 100;
-//    echo '<span class="text-'.($pct >= 50 ? 'danger' : ($pct >= 25 ? 'warning' : 'success')).'" title="'.date('j M H:i', $lastUsed['timestamp']).' : '.round($lastUsed['value'],2).' '.$memUsed['unit'].'">';
-//      echo round($pct, 1).'%';
-//    echo '</span>';
-//    echo ' <strong title="'.sprintf('%+.2f', $diff).' '.$memUsed['unit'].' ('.$diffTime.' min.)">('.($lastUsed['value'] > $prevUsed['value'] ? '&nearr;' : ($lastUsed['value'] < $prevUsed['value'] ? '&searr;' : '=')).')</strong>';
-//  } catch (Exception $e) {
-//    //echo '<samp class="small text-danger">'.$e->getMessage().'</samp>';
-//  }
-?>
-            </td>
-          </tr>
-<?php
-  }
-?>
-        </tbody>
-      </table>
-      <table class="table table-bordered table-striped table-sm">
-        <thead class="thead-inverse">
-          <tr>
-            <th>Volume</th>
-            <th>Region</th>
-            <th>Type</th>
-            <th>Size</th>
-            <th>Status</th>
-            <th>Attached to</th>
-          </tr>
-        </thead>
-        <tbody>
-<?php
-  $volume = $ovh->get('/cloud/project/'.$p.'/volume');
-  foreach ($volume as $v) {
-?>
-          <tr>
-            <th><?= $v['name'] ?><br><small><?= $v['id'] ?></small></th>
-            <td><?= $v['region'] ?></td>
-            <td><?= $v['type'] ?></td>
-            <td class="text-nowrap text-xs-right"><?= $v['size'] ?> Go</td>
-            <td><?= $v['status'] ?></td>
-            <td>
-              <ul style="padding-left:20px;">
-<?php
-    foreach ($v['attachedTo'] as $a) {
-      $i =  $ovh->get('/cloud/project/'.$p.'/instance/'.$a);
-      echo '<li>'.$i['name'].'<br><small>'.$i['id'].'</small></li>';
-    }
-?>
-              </ul>
-            </td>
-          </tr>
-<?php
-  }
-?>
-        </tbody>
-      </table>
-<?php
-}
-*/
 ?>
       <div id="console" class="text-danger small">
 <?php if (!empty($errors)) { ?>
@@ -308,14 +177,11 @@ foreach ($project as $p) {
     <div id="modal" class="modal fade">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title"><i class="fa fa-line-chart" aria-hidden="true"></i> Chart <small></small></h5>
+          <div class="modal-body">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
-          </div>
-          <div class="modal-body">
-            <canvas id="chart" height="400" width="400"></canvas>
+            <canvas id="chart" width="468" height="400"></canvas>
           </div>
         </div>
       </div>

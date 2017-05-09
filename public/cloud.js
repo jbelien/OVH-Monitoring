@@ -12,7 +12,7 @@ $(document).ready(function() {
 
     var project = $(this).closest("tr").data("project");
     var instance = $(this).closest("tr").data("instance");
-    $("#modal .modal-title > small").text(instance);
+    var title = instance;
 
     var params = {
       "instance": instance,
@@ -21,10 +21,13 @@ $(document).ready(function() {
     };
     if ($(this).is("a[href='#disk-chart']")) {
       params["disk-chart"] = 1;
+      title += " (Disk)";
     } else if ($(this).is("a[href='#cpu-chart']")) {
       params["cpu-chart"] = 1;
+      title += " (CPU)";
     } else if ($(this).is("a[href='#ram-chart']")) {
       params["ram-chart"] = 1;
+      title += " (RAM)";
     }
 
     $.getJSON("cloud-xhr.php", params, function(json) {
@@ -55,19 +58,22 @@ $(document).ready(function() {
       chart = new Chart(ctx, {
           data: data,
           options: {
-            responsive: false,
             scales: {
               xAxes: [{
                 time: {
-                  unit: 'day'
+                  unit: "day"
                 },
-                type: 'time'
+                type: "time"
               }],
               yAxes: [{
                 ticks: {
                   beginAtZero: true
                 }
               }]
+            },
+            title: {
+              display: true,
+              text: title
             }
           },
           type: "line"

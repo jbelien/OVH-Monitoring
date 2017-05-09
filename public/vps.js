@@ -13,7 +13,7 @@ $(document).ready(function() {
     $("body").css("opacity", "0.3");
 
     var vps = $(this).closest("tr").data("vps");
-    $("#modal .modal-title > small").text(vps);
+    var title = vps;
 
     var params = {
       "time": Date.now(),
@@ -21,10 +21,13 @@ $(document).ready(function() {
     };
     if ($(this).is("a[href='#disk-chart']")) {
       params["disk-chart"] = 1;
+      title += " (Disk)";
     } else if ($(this).is("a[href='#cpu-chart']")) {
       params["cpu-chart"] = 1;
+      title += " (CPU)";
     } else if ($(this).is("a[href='#ram-chart']")) {
       params["ram-chart"] = 1;
+      title += " (RAM)";
     }
 
     $.getJSON("vps-xhr.php", params, function(json) {
@@ -55,19 +58,22 @@ $(document).ready(function() {
       chart = new Chart(ctx, {
           data: data,
           options: {
-            responsive: false,
             scales: {
               xAxes: [{
                 time: {
-                  unit: 'day'
+                  unit: "day"
                 },
-                type: 'time'
+                type: "time"
               }],
               yAxes: [{
                 ticks: {
                   beginAtZero: true
                 }
               }]
+            },
+            title: {
+              display: true,
+              text: title
             }
           },
           type: "line"

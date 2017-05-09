@@ -94,7 +94,7 @@ foreach ($vps as $v) {
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="14" class="text-right small text-muted"><?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?></td>
+            <td colspan="15" class="text-right small text-muted"><?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?></td>
           </tr>
         </tfoot>
       </table>
@@ -107,14 +107,11 @@ foreach ($vps as $v) {
     <div id="modal" class="modal fade">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title"><i class="fa fa-line-chart" aria-hidden="true"></i> Chart <small></small></h5>
+          <div class="modal-body">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
-          </div>
-          <div class="modal-body">
-            <canvas id="chart" height="400" width="400"></canvas>
+            <canvas id="chart" width="468" height="400"></canvas>
           </div>
         </div>
       </div>
