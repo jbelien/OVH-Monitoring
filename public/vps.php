@@ -49,6 +49,7 @@ if (!file_exists($cache) || filemtime($cache) < (time() - 7*24*60*60) || isset($
               VPS
               <a id="refresh" href="vps.php?nocache" class="float-right"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a>
             </th>
+            <th>Zone</th>
             <th>Offer</th>
             <th colspan="2">OS</th>
             <th colspan="3">Disk(s)</th>
@@ -64,6 +65,7 @@ foreach ($vps as $v) {
 ?>
           <tr data-vps="<?= $v->name ?>">
             <th class="text-nowrap"><?= $v->name ?><br><small><?= $v->displayName ?></small></th>
+            <td style="text-nowrap"><?= $v->zone ?></td>
             <td class="text-nowrap"><?= $v->model->offer ?><br><em class="small"><?= $v->model->version ?> - <?= $v->model->name ?></em></td>
             <td style="vertical-align: middle;"><?= $v->distribution->name ?></td>
             <td style="vertical-align: middle;" class="text-nowrap"><?= $v->distribution->bitFormat ?> bits</td>
