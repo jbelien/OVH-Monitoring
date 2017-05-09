@@ -5,3 +5,10 @@
 #refresh:hover {
   color: #ccc;
 }
+
+.table-striped > tbody > tr.even {
+  background-color: rgba(0,0,0,.05);
+}
+.table-striped > tbody > tr.odd {
+  background-color: rgb(255,255,255);
+}

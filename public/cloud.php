@@ -70,94 +70,85 @@ $project = json_decode(file_get_contents($cache));
 foreach ($project as $p) {
 ?>
       <h2 class="mt-3">Project &laquo; <?= $p->description ?> &raquo;<br><small><?= $p->project_id ?></small></h2>
-      <div class="row">
-        <div class="col">
-          <table class="table table-bordered table-striped table-sm mt-3">
-            <thead class="thead-inverse">
-              <tr>
-                <th>
-                  Instance
-                  <a id="refresh" href="cloud.php?nocache" class="float-right"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a>
-                </th>
-                <th>Region</th>
-                <th>Flavor</th>
-                <th>Image</th>
-                <th>Disk</th>
-                <th colspan="3">vCPU(s)</th>
-                <th colspan="3">RAM</th>
-              </tr>
-            </thead>
-            <tbody>
-<?php foreach ($p->instances as $i) { ?>
-              <tr data-project="<?= $p->project_id ?>" data-instance="<?= $i->id ?>">
-                <th><?= $i->name ?><br><small><?= $i->id ?></small></th>
-                <td style="vertical-align: middle;"><?= $i->region ?></td>
-                <td style="vertical-align: middle;"><?= $i->flavor->type ?> - <?= $i->flavor->name ?> (<?= $i->flavor->osType ?>)</td>
-                <td style="vertical-align: middle;"><?= (isset($i->image) ? $i->image->name : '-') ?></td>
-                <td style="vertical-align: middle;" class="text-nowrap text-right"><?= $i->flavor->disk ?> Go</td>
-                <td style="vertical-align: middle;" class="text-right"><?= $i->flavor->vcpus ?></td>
-                <td style="vertical-align: middle;" class="text-nowrap text-right"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
-                <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#cpu-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
-                <td style="vertical-align: middle;" class="text-nowrap text-right"><?= ($i->flavor->ram / 1000) ?> Go</td>
-                <td style="vertical-align: middle;" class="text-nowrap text-right"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
-                <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#ram-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
-              </tr>
-<?php } ?>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="14" class="text-right small text-muted"><?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?></td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-        <div class="col">
-          <table class="table table-bordered table-striped table-sm mt-3">
-            <thead class="thead-inverse">
-              <tr>
-                <th>Volume</th>
-                <th>Region</th>
-                <th>Type</th>
-                <th>Size</th>
-                <th>Status</th>
-                <th>Attached to</th>
-              </tr>
-            </thead>
-            <tbody>
-<?php foreach ($p->volumes as $v) { ?>
-              <tr>
-                <th><?= $v->name ?><br><small><?= $v->id ?></small></th>
-                <td style="vertical-align: middle;"><?= $v->region ?></td>
-                <td style="vertical-align: middle;"><?= $v->type ?></td>
-                <td style="vertical-align: middle;" class="text-nowrap text-right"><?= $v->size ?> Go</td>
-                <td style="vertical-align: middle;"><?= $v->status ?></td>
-                <td>
+      <table class="table table-bordered table-striped table-sm mt-3">
+        <thead class="thead-inverse">
+          <tr>
+            <th colspan="11">
+              Instance
+              <a id="refresh" href="cloud.php?nocache" class="float-right"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a>
+            </th>
+            <th colspan="5">Volume(s)</th>
+          </tr>
+          <tr>
+            <th></th>
+            <th>Region</th>
+            <th>Flavor</th>
+            <th>Image</th>
+            <th>Disk</th>
+            <th colspan="3">vCPU(s)</th>
+            <th colspan="3">RAM</th>
+            <th></th>
+            <th>Region</th>
+            <th>Type</th>
+            <th>Size</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+<?php foreach ($p->instances as $index => $i) { ?>
 <?php
-  if (count($v->attachedTo) == 1) {
-    $attach = NULL; $k = 0;
-    while (is_null($attach) || $k < count($p->instances)) {
-      if ($p->instances[$k]->id === $v->attachedTo[0]) {
-        $attach = $p->instances[$k];
-      }
-      $k++;
+  $instance_volumes = array();
+  foreach ($p->volumes as $v) {
+    if (in_array($i->id, $v->attachedTo)) {
+      $instance_volumes[] = $v;
     }
-?>
-                  <strong><?= $attach->name ?></strong><br><small><?= $attach->id ?></small>
-<?php
   }
 ?>
-                </td>
-              </tr>
+          <tr data-project="<?= $p->project_id ?>" data-instance="<?= $i->id ?>" class="<?= ($index % 2 === 0 ? 'even' : 'odd') ?>">
+            <th <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>"><?= $i->name ?><br><small><?= $i->id ?></small></th>
+            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>"><?= $i->region ?></td>
+            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>"><?= $i->flavor->type ?> - <?= $i->flavor->name ?> (<?= $i->flavor->osType ?>)</td>
+            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>"><?= (isset($i->image) ? $i->image->name : '<span class="text-muted">N/A</span>') ?></td>
+            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>" class="text-nowrap text-right"><?= $i->flavor->disk ?> Go</td>
+            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>" class="text-right"><?= $i->flavor->vcpus ?></td>
+            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>" class="text-nowrap text-right"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
+            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>" class="text-nowrap text-center"><a href="#cpu-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
+            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>" class="text-nowrap text-right"><?= ($i->flavor->ram / 1000) ?> Go</td>
+            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>" class="text-nowrap text-right"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
+            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>" class="text-nowrap text-center"><a href="#ram-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
+<?php if (count($instance_volumes) === 0) { ?>
+            <td colspan="5"></td>
+<?php } else { ?>
+            <th><?= $instance_volumes[0]->name ?><br><small><?= $instance_volumes[0]->id ?></small></th>
+            <td style="vertical-align: middle;"><?= $instance_volumes[0]->region ?></td>
+            <td style="vertical-align: middle;"><?= $instance_volumes[0]->type ?></td>
+            <td style="vertical-align: middle;" class="text-nowrap text-right"><?= $instance_volumes[0]->size ?> Go</td>
+            <td style="vertical-align: middle;"><?= $instance_volumes[0]->status ?></td>
 <?php } ?>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="14" class="text-right small text-muted"><?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?></td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
+          </tr>
+<?php
+  if (count($instance_volumes) > 1) {
+    for ($k = 1; $k < count($instance_volumes); $k++) {
+?>
+          <tr class="<?= ($index % 2 === 0 ? 'even' : 'odd') ?>">
+            <th><?= $instance_volumes[$k]->name ?><br><small><?= $instance_volumes[$k]->id ?></small></th>
+            <td style="vertical-align: middle;"><?= $instance_volumes[$k]->region ?></td>
+            <td style="vertical-align: middle;"><?= $instance_volumes[$k]->type ?></td>
+            <td style="vertical-align: middle;" class="text-nowrap text-right"><?= $instance_volumes[$k]->size ?> Go</td>
+            <td style="vertical-align: middle;"><?= $instance_volumes[$k]->status ?></td>
+          </tr>
+<?php
+    }
+  }
+?>
+<?php } ?>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="16" class="text-right small text-muted"><?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?></td>
+          </tr>
+        </tfoot>
+      </table>
       <hr>
 <?php
 }
