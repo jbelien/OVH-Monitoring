@@ -99,20 +99,20 @@ function callBackCPU() {
       var instance = $(this).data("instance");
 
       if (typeof json[project][instance] === "object") {
-        $(this).find("td:eq(5)").
+        $(this).find("td:eq(6)").
           html("<span title=\"" + Math.round(json[project][instance][0]) + " " + json[project][instance][1] + "\" class=\"" + (json[project][instance][2] < 50 ? "text-success" : (json[project][instance][2] < 75 ? "text-warning" : "text-danger")) + "\">" + json[project][instance][2] + "%</span>");
         if (json[project][instance][3] === -1) {
-          $(this).find("td:eq(5)").
+          $(this).find("td:eq(6)").
             append(" <i class=\"fa fa-angle-double-down fa-fw\" aria-hidden=\"true\"></i>");
         } else if (json[project][instance][3] === 1) {
-          $(this).find("td:eq(5)").
+          $(this).find("td:eq(6)").
             append(" <i class=\"fa fa-angle-double-up fa-fw\" aria-hidden=\"true\"></i>");
         } else {
-          $(this).find("td:eq(5)").
+          $(this).find("td:eq(6)").
             append(" <i class=\"fa fa-circle-thin fa-fw\" aria-hidden=\"true\" style=\"visibility: hidden;\"></i>");
         }
       } else {
-        $(this).find("td:eq(5)").
+        $(this).find("td:eq(6)").
           html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
 
         $("#console > ol").append("<li id=\"console-" + consoleId + "\"><samp>" + json[project][instance] + "</samp></li>");
@@ -135,20 +135,20 @@ function callBackRAM() {
       var instance = $(this).data("instance");
 
       if (typeof json[project][instance] === "object") {
-        $(this).find("td:eq(8)").
+        $(this).find("td:eq(9)").
           html("<span title=\"" + Math.round(json[project][instance][0]) + " " + json[project][instance][1] + "\" class=\"" + (json[project][instance][2] < 50 ? "text-success" : (json[project][instance][2] < 75 ? "text-warning" : "text-danger")) + "\">" + json[project][instance][2] + "%</span>");
         if (json[project][instance][3] === -1) {
-          $(this).find("td:eq(8)").
+          $(this).find("td:eq(9)").
             append(" <i class=\"fa fa-angle-double-down fa-fw\" aria-hidden=\"true\"></i>");
         } else if (json[project][instance][3] === 1) {
-          $(this).find("td:eq(8)").
+          $(this).find("td:eq(9)").
             append(" <i class=\"fa fa-angle-double-up fa-fw\" aria-hidden=\"true\"></i>");
         } else {
-          $(this).find("td:eq(8)").
+          $(this).find("td:eq(9)").
             append(" <i class=\"fa fa-circle-thin fa-fw\" aria-hidden=\"true\" style=\"visibility: hidden;\"></i>");
         }
       } else {
-        $(this).find("td:eq(8)").
+        $(this).find("td:eq(9)").
           html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
 
         $("#console > ol").append("<li id=\"console-" + consoleId + "\"><samp>" + json[project][instance] + "</samp></li>");

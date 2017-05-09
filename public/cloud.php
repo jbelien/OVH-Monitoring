@@ -73,7 +73,7 @@ foreach ($project as $p) {
       <table class="table table-bordered table-striped table-sm mt-3">
         <thead class="thead-inverse">
           <tr>
-            <th colspan="11">
+            <th colspan="12">
               Instance
               <a id="refresh" href="cloud.php?nocache" class="float-right"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a>
             </th>
@@ -81,6 +81,7 @@ foreach ($project as $p) {
           </tr>
           <tr>
             <th></th>
+            <th>IP</th>
             <th>Region</th>
             <th>Flavor</th>
             <th>Image</th>
@@ -106,6 +107,13 @@ foreach ($project as $p) {
 ?>
           <tr data-project="<?= $p->project_id ?>" data-instance="<?= $i->id ?>" class="<?= ($index % 2 === 0 ? 'even' : 'odd') ?>">
             <th <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>"><?= $i->name ?><br><small><?= $i->id ?></small></th>
+            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>">
+              <ul class="list-unstyled mb-0">
+<?php foreach ($i->ipAddresses as $ip) { ?>
+                <li><?= $ip->ip ?></li>
+<?php } ?>
+              </ul>
+            </td>
             <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>"><?= $i->region ?></td>
             <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>"><?= $i->flavor->type ?> - <?= $i->flavor->name ?> (<?= $i->flavor->osType ?>)</td>
             <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>"><?= (isset($i->image) ? $i->image->name : '<span class="text-muted">N/A</span>') ?></td>
@@ -145,11 +153,10 @@ foreach ($project as $p) {
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="16" class="text-right small text-muted"><?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?></td>
+            <td colspan="17" class="text-right small text-muted"><?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?></td>
           </tr>
         </tfoot>
       </table>
-      <hr>
 <?php
 }
 ?>

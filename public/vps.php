@@ -12,6 +12,7 @@ if (!file_exists($cache) || filemtime($cache) < (time() - 7*24*60*60) || isset($
   foreach ($vps as $v) {
     $_v = $ovh->get('/vps/'.$v);
     $_v['distribution'] = $ovh->get('/vps/'.$v.'/distribution');
+    $_v['ipAddresses'] = $ovh->get('/vps/'.$v.'/ips');
 
     $json[] = $_v;
   }
@@ -49,6 +50,7 @@ if (!file_exists($cache) || filemtime($cache) < (time() - 7*24*60*60) || isset($
               VPS
               <a id="refresh" href="vps.php?nocache" class="float-right"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a>
             </th>
+            <th>IP</th>
             <th>Zone</th>
             <th>Offer</th>
             <th colspan="2">OS</th>
@@ -65,6 +67,13 @@ foreach ($vps as $v) {
 ?>
           <tr data-vps="<?= $v->name ?>">
             <th class="text-nowrap"><?= $v->name ?><br><small><?= $v->displayName ?></small></th>
+            <td>
+              <ul class="list-unstyled mb-0">
+<?php foreach ($v->ipAddresses as $ip) { ?>
+                <li><?= $ip ?></li>
+<?php } ?>
+              </ul>
+            </td>
             <td style="text-nowrap"><?= $v->zone ?></td>
             <td class="text-nowrap"><?= $v->model->offer ?><br><em class="small"><?= $v->model->version ?> - <?= $v->model->name ?></em></td>
             <td style="vertical-align: middle;"><?= $v->distribution->name ?></td>
@@ -94,7 +103,7 @@ foreach ($vps as $v) {
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="15" class="text-right small text-muted"><?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?></td>
+            <td colspan="16" class="text-right small text-muted"><?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?></td>
           </tr>
         </tfoot>
       </table>

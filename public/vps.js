@@ -144,10 +144,10 @@ function callBackDisk() {
 
       if (disks.length === 1) {
         if (typeof disks[0] === "object") {
-          $(this).find("td:eq(5)").
+          $(this).find("td:eq(6)").
             html("<span title=\"" + Math.round(disks[0][0]) + " " + disks[0][1] + "\" class=\"" + (disks[0][2] < 50 ? "text-success" : (disks[0][2] < 75 ? "text-warning" : "text-danger")) + "\">" + disks[0][2] + "%</span>")
           } else {
-            $(this).find("td:eq(5)").
+            $(this).find("td:eq(6)").
               html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
 
             $("#console > ol").append("<li id=\"console-" + consoleId + "\"><samp>" + disks[0] + "</samp></li>");
@@ -172,20 +172,20 @@ function callBackCPU() {
       var name = $(this).data("vps");
 
       if (typeof json[name] === "object") {
-        $(this).find("td:eq(8)").
+        $(this).find("td:eq(9)").
           html("<span title=\"" + Math.round(json[name][0]) + " " + json[name][1] + "\" class=\"" + (json[name][2] < 50 ? "text-success" : (json[name][2] < 75 ? "text-warning" : "text-danger")) + "\">" + json[name][2] + "%</span>");
         if (json[name][3] === -1) {
-          $(this).find("td:eq(8)").
+          $(this).find("td:eq(9)").
             append(" <i class=\"fa fa-angle-double-down fa-fw\" aria-hidden=\"true\"></i>");
         } else if (json[name][3] === 1) {
-          $(this).find("td:eq(8)").
+          $(this).find("td:eq(9)").
             append(" <i class=\"fa fa-angle-double-up fa-fw\" aria-hidden=\"true\"></i>");
         } else {
-          $(this).find("td:eq(8)").
+          $(this).find("td:eq(9)").
             append(" <i class=\"fa fa-circle-thin fa-fw\" aria-hidden=\"true\" style=\"visibility: hidden;\"></i>");
         }
       } else {
-        $(this).find("td:eq(8)").
+        $(this).find("td:eq(9)").
           html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
 
         $("#console > ol").append("<li id=\"console-" + consoleId + "\"><samp>" + json[name] + "</samp></li>");
@@ -207,20 +207,20 @@ function callBackRAM() {
       var name = $(this).data("vps");
 
       if (typeof json[name] === "object") {
-        $(this).find("td:eq(11)").
+        $(this).find("td:eq(12)").
           html("<span title=\"" + Math.round(json[name][0]) + " " + json[name][1] + "\" class=\"" + (json[name][2] < 25 ? "text-success" : (json[name][2] < 75 ? "text-warning" : "text-danger")) + "\">" + json[name][2] + "%</span>");
         if (json[name][3] === -1) {
-          $(this).find("td:eq(11)").
+          $(this).find("td:eq(12)").
             append(" <i class=\"fa fa-angle-double-down fa-fw\" aria-hidden=\"true\"></i>");
         } else if (json[name][3] === 1) {
-          $(this).find("td:eq(11)").
+          $(this).find("td:eq(12)").
             append(" <i class=\"fa fa-angle-double-up fa-fw\" aria-hidden=\"true\"></i>");
         } else {
-          $(this).find("td:eq(11)").
+          $(this).find("td:eq(12)").
             append(" <i class=\"fa fa-circle-thin fa-fw\" aria-hidden=\"true\" style=\"visibility: hidden;\"></i>");
         }
       } else {
-        $(this).find("td:eq(11)").
+        $(this).find("td:eq(12)").
           html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
 
         $("#console > ol").append("<li id=\"console-" + consoleId + "\"><samp>" + json[name] + "</samp></li>");
