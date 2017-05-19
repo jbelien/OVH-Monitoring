@@ -46,10 +46,7 @@ if (!file_exists($cache) || filemtime($cache) < (time() - 7*24*60*60) || isset($
       <table class="table table-bordered table-striped table-sm mt-3">
         <thead class="thead-inverse">
           <tr>
-            <th>
-              VPS
-              <a id="refresh" href="vps.php?nocache" class="float-right"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a>
-            </th>
+            <th>VPS</th>
             <th>IP</th>
             <th>Zone</th>
             <th>Offer</th>
@@ -103,7 +100,10 @@ foreach ($vps as $v) {
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="16" class="text-right small text-muted"><?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?></td>
+            <td colspan="16" class="text-right small text-muted">
+              <?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?>
+              <a id="refresh" href="vps.php?nocache"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a>
+            </td>
           </tr>
         </tfoot>
       </table>

@@ -73,10 +73,7 @@ foreach ($project as $p) {
       <table class="table table-bordered table-striped table-sm mt-3">
         <thead class="thead-inverse">
           <tr>
-            <th colspan="12">
-              Instance
-              <a id="refresh" href="cloud.php?nocache" class="float-right"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a>
-            </th>
+            <th colspan="12">Instance</th>
             <th colspan="5">Volume(s)</th>
           </tr>
           <tr>
@@ -153,7 +150,10 @@ foreach ($project as $p) {
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="17" class="text-right small text-muted"><?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?></td>
+            <td colspan="17" class="text-right small text-muted">
+              <?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?>
+              <a id="refresh" href="cloud.php?nocache"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a>
+            </td>
           </tr>
         </tfoot>
       </table>
