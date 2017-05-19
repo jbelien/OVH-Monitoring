@@ -5,6 +5,20 @@ $(document).ready(function() {
   /*var intervalCPU = window.setInterval(callBackCPU, (5*60)*1000);*/ callBackCPU();
   /*var intervalRAM = window.setInterval(callBackRAM, (5*60)*1000);*/ callBackRAM();
 
+  $("#modal-info").on("show.bs.modal", function (event) {
+    var project = $(event.relatedTarget).closest("tr").data("project");
+    var instance = $(event.relatedTarget).closest("tr").data("instance");
+    var params = {
+      "info": 1,
+      "instance": instance,
+      "project": project,
+      "time": Date.now()
+    };
+
+    $("#modal-info .modal-title").empty().html("<i class=\"fa fa-info-circle\" aria-hidden=\"true\"></i> " + instance);
+    $("#modal-info .modal-body").empty().load("cloud-xhr.php", params);
+  });
+
   $("a[href='#disk-chart'], a[href='#cpu-chart'], a[href='#ram-chart']").on("click", function(event) {
     event.preventDefault();
 
@@ -81,7 +95,7 @@ $(document).ready(function() {
 
       $("body").css("opacity", "");
 
-      $("#modal").modal("show");
+      $("#modal-chart").modal("show");
     });
   });
 });
@@ -99,20 +113,20 @@ function callBackCPU() {
       var instance = $(this).data("instance");
 
       if (typeof json[project][instance] === "object") {
-        $(this).find("td:eq(6)").
+        $(this).find("td:eq(7)").
           html("<span title=\"" + Math.round(json[project][instance][0]) + " " + json[project][instance][1] + "\" class=\"" + (json[project][instance][2] < 50 ? "text-success" : (json[project][instance][2] < 75 ? "text-warning" : "text-danger")) + "\">" + json[project][instance][2] + "%</span>");
         if (json[project][instance][3] === -1) {
-          $(this).find("td:eq(6)").
+          $(this).find("td:eq(7)").
             append(" <i class=\"fa fa-angle-double-down fa-fw\" aria-hidden=\"true\"></i>");
         } else if (json[project][instance][3] === 1) {
-          $(this).find("td:eq(6)").
+          $(this).find("td:eq(7)").
             append(" <i class=\"fa fa-angle-double-up fa-fw\" aria-hidden=\"true\"></i>");
         } else {
-          $(this).find("td:eq(6)").
+          $(this).find("td:eq(7)").
             append(" <i class=\"fa fa-circle-thin fa-fw\" aria-hidden=\"true\" style=\"visibility: hidden;\"></i>");
         }
       } else {
-        $(this).find("td:eq(6)").
+        $(this).find("td:eq(7)").
           html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
 
         $("#console > ol").append("<li id=\"console-" + consoleId + "\"><samp>" + json[project][instance] + "</samp></li>");
@@ -135,20 +149,20 @@ function callBackRAM() {
       var instance = $(this).data("instance");
 
       if (typeof json[project][instance] === "object") {
-        $(this).find("td:eq(9)").
+        $(this).find("td:eq(10)").
           html("<span title=\"" + Math.round(json[project][instance][0]) + " " + json[project][instance][1] + "\" class=\"" + (json[project][instance][2] < 50 ? "text-success" : (json[project][instance][2] < 75 ? "text-warning" : "text-danger")) + "\">" + json[project][instance][2] + "%</span>");
         if (json[project][instance][3] === -1) {
-          $(this).find("td:eq(9)").
+          $(this).find("td:eq(10)").
             append(" <i class=\"fa fa-angle-double-down fa-fw\" aria-hidden=\"true\"></i>");
         } else if (json[project][instance][3] === 1) {
-          $(this).find("td:eq(9)").
+          $(this).find("td:eq(10)").
             append(" <i class=\"fa fa-angle-double-up fa-fw\" aria-hidden=\"true\"></i>");
         } else {
-          $(this).find("td:eq(9)").
+          $(this).find("td:eq(10)").
             append(" <i class=\"fa fa-circle-thin fa-fw\" aria-hidden=\"true\" style=\"visibility: hidden;\"></i>");
         }
       } else {
-        $(this).find("td:eq(9)").
+        $(this).find("td:eq(10)").
           html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
 
         $("#console > ol").append("<li id=\"console-" + consoleId + "\"><samp>" + json[project][instance] + "</samp></li>");

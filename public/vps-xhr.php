@@ -6,8 +6,6 @@ $ovh = new \Ovh\Api( $ini['application_key'], $ini['application_secret'], $ini['
 
 $cache = '../cache/vps.json';
 
-header('Content-Type: application/json');
-
 /* ************************************************************************
  *
  */
@@ -21,6 +19,7 @@ if (isset($_GET['status'])) {
     $result[$v->name] = $status;
   }
 
+  header('Content-Type: application/json');
   echo json_encode($result);
 }
 /* ************************************************************************
@@ -50,6 +49,7 @@ else if (isset($_GET['disk'])) {
     }
   }
 
+  header('Content-Type: application/json');
   echo json_encode($result);
 }
 /* ************************************************************************
@@ -88,6 +88,7 @@ else if (isset($_GET['disk-chart'], $_GET['vps'])) {
     }
   }
 
+  header('Content-Type: application/json');
   echo json_encode($result);
 }
 /* ************************************************************************
@@ -121,6 +122,7 @@ else if (isset($_GET['cpu'])) {
     }
   }
 
+  header('Content-Type: application/json');
   echo json_encode($result);
 }
 /* ************************************************************************
@@ -156,6 +158,7 @@ else if (isset($_GET['cpu-chart'], $_GET['vps'])) {
     $result[] = $e->getMessage();
   }
 
+  header('Content-Type: application/json');
   echo json_encode($result);
 }
 /* ************************************************************************
@@ -189,6 +192,7 @@ else if (isset($_GET['ram'])) {
     }
   }
 
+  header('Content-Type: application/json');
   echo json_encode($result);
 }
 /* ************************************************************************
@@ -224,7 +228,57 @@ else if (isset($_GET['ram-chart'], $_GET['vps'])) {
     $result[] = $e->getMessage();
   }
 
+  header('Content-Type: application/json');
   echo json_encode($result);
+}
+/* ************************************************************************
+ *
+ */
+else if (isset($_REQUEST['info'], $_REQUEST['vps'])) {
+  $json = json_decode(file_get_contents($cache));
+  $vps = NULL;
+  foreach ($json as $j) {
+    if ($j->name === $_REQUEST['vps']) {
+      $vps = $j;
+      break;
+    }
+  }
+
+  if (!is_null($vps)) {
+    $d1 = new DateTime($vps->infos->expiration);
+    $d2 = new DateTime();
+    $diff = $d1->diff($d2);
+?>
+  <table class="table table-sm table-striped">
+    <tbody>
+      <tr>
+        <th><i class="fa fa-calendar" aria-hidden="true"></i> <?= _('Creation') ?></th>
+        <td><?= $vps->infos->creation ?></td>
+      </tr>
+      <tr<?= ($diff->days < 30 ? ' class="text-warning"' : '') ?>>
+        <th><i class="fa fa-calendar" aria-hidden="true"></i> <?= _('Expiration') ?></th>
+        <td><?= $vps->infos->expiration ?> (<?= sprintf(_('%d days'), $diff->days) ?>)</td>
+      </tr>
+      <tr>
+        <th><i class="fa fa-credit-card" aria-hidden="true"></i> <?= _('Renewal') ?></th>
+        <td><?= $vps->infos->renewalType ?></td>
+      </tr>
+      <tr>
+        <th><i class="fa fa-user" aria-hidden="true"></i> <?= _('Administration contact') ?></th>
+        <td><?= $vps->infos->contactAdmin ?></td>
+      </tr>
+      <tr>
+        <th><i class="fa fa-user" aria-hidden="true"></i> <?= _('Billing contact') ?></th>
+        <td><?= $vps->infos->contactBilling ?></td>
+      </tr>
+      <tr>
+        <th><i class="fa fa-user" aria-hidden="true"></i> <?= _('Technical contact') ?></th>
+        <td><?= $vps->infos->contactTech ?></td>
+      </tr>
+    </tbody>
+  </table>
+<?php
+  }
 }
 
 exit();

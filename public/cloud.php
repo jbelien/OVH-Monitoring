@@ -73,11 +73,11 @@ foreach ($project as $p) {
       <table class="table table-bordered table-striped table-sm mt-3">
         <thead class="thead-inverse">
           <tr>
-            <th colspan="12">Instance</th>
+            <th colspan="13">Instance</th>
             <th colspan="5">Volume(s)</th>
           </tr>
           <tr>
-            <th></th>
+            <th colspan="2"></th>
             <th>IP</th>
             <th>Region</th>
             <th>Flavor</th>
@@ -103,7 +103,11 @@ foreach ($project as $p) {
   }
 ?>
           <tr data-project="<?= $p->project_id ?>" data-instance="<?= $i->id ?>" class="<?= ($index % 2 === 0 ? 'even' : 'odd') ?>">
-            <th <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>"><?= $i->name ?><br><small><?= $i->id ?></small></th>
+            <th <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>">
+              <?= $i->name ?><br>
+              <small><?= $i->id ?></small>
+            </th>
+            <td><a href="#modal-info" data-toggle="modal"><i class="fa fa-info-circle" aria-hidden="true"></i></a></td>
             <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>">
               <ul class="list-unstyled mb-0">
 <?php foreach ($i->ipAddresses as $ip) { ?>
@@ -150,7 +154,7 @@ foreach ($project as $p) {
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="17" class="text-right small text-muted">
+            <td colspan="18" class="text-right small text-muted">
               <?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?>
               <a id="refresh" href="cloud.php?nocache"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a>
             </td>
@@ -172,7 +176,7 @@ foreach ($project as $p) {
       </div>
     </div>
 
-    <div id="modal" class="modal fade">
+    <div id="modal-chart" class="modal fade">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-body">
@@ -181,6 +185,20 @@ foreach ($project as $p) {
             </button>
             <canvas id="chart" width="468" height="400"></canvas>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="modal-info" class="modal fade">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body"></div>
         </div>
       </div>
     </div>

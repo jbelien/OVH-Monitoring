@@ -136,5 +136,43 @@ else if (isset($_GET['ram-chart'], $_GET['project'], $_GET['instance'])) {
 
   echo json_encode($result);
 }
+/* ************************************************************************
+ *
+ */
+else if (isset($_REQUEST['info'], $_REQUEST['project'], $_REQUEST['instance'])) {
+  $json = json_decode(file_get_contents($cache));
+  $instance = NULL;
+  foreach ($json as $j) {
+    if ($j->project_id === $_REQUEST['project']) {
+      foreach ($j->instances as $i) {
+        if ($i->id === $_REQUEST['instance']) {
+          $instance = $i;
+          break;
+        }
+      }
+    }
+  }
+
+  if (!is_null($instance)) {
+?>
+  <table class="table table-sm table-striped">
+    <tbody>
+      <tr>
+        <th><i class="fa fa-calendar" aria-hidden="true"></i> <?= _('Creation') ?></th>
+        <td><?= date('Y-m-d', strtotime($instance->created)) ?></td>
+      </tr>
+      <tr>
+        <th><i class="fa fa-credit-card" aria-hidden="true"></i> <?= _('Monthly billing') ?></th>
+<?php if (is_null($instance->monthlyBilling)) { ?>
+        <td class="text-muted"><i class="fa fa-times" aria-hidden="true"></i> <?= _('Disabled') ?></td>
+<?php } else { ?>
+        <td><i class="fa fa-check" aria-hidden="true"></i> <?= sprintf(_('Since %s'), date('Y-m-d', strtotime($instance->monthlyBilling->since))) ?></td>
+<?php } ?>
+      </tr>
+    </tbody>
+  </table>
+<?php
+  }
+}
 
 exit();

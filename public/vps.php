@@ -13,6 +13,7 @@ if (!file_exists($cache) || filemtime($cache) < (time() - 7*24*60*60) || isset($
     $_v = $ovh->get('/vps/'.$v);
     $_v['distribution'] = $ovh->get('/vps/'.$v.'/distribution');
     $_v['ipAddresses'] = $ovh->get('/vps/'.$v.'/ips');
+    $_v['infos'] = $ovh->get('/vps/'.$v.'/serviceInfos');
 
     $json[] = $_v;
   }
@@ -46,7 +47,7 @@ if (!file_exists($cache) || filemtime($cache) < (time() - 7*24*60*60) || isset($
       <table class="table table-bordered table-striped table-sm mt-3">
         <thead class="thead-inverse">
           <tr>
-            <th>VPS</th>
+            <th colspan="2">VPS</th>
             <th>IP</th>
             <th>Zone</th>
             <th>Offer</th>
@@ -61,9 +62,23 @@ if (!file_exists($cache) || filemtime($cache) < (time() - 7*24*60*60) || isset($
 <?php
 $vps = json_decode(file_get_contents($cache));
 foreach ($vps as $v) {
+  $d1 = new DateTime($v->infos->expiration);
+  $d2 = new DateTime();
+  $diff = $d1->diff($d2);
+  $expiration = ($diff->days <= 30);
 ?>
           <tr data-vps="<?= $v->name ?>">
-            <th class="text-nowrap"><?= $v->name ?><br><small><?= $v->displayName ?></small></th>
+            <th class="text-nowrap">
+<?php if ($expiration === TRUE && $v->infos->renewalType === 'manual') { ?>
+              <span class="text-warning" title="<?= sprintf(_('Expiration in %d days'), $diff->days) ?>" style="cursor: help;">
+<?php } ?>
+              <?= $v->name ?><br>
+              <small><?= $v->displayName ?></small>
+<?php if ($expiration === TRUE && $v->infos->renewalType === 'manual') { ?>
+              </span>
+<?php } ?>
+            </th>
+            <td class="text-center"><a href="#modal-info" data-toggle="modal"><i class="fa fa-info-circle" aria-hidden="true"></i></a></td>
             <td>
               <ul class="list-unstyled mb-0">
 <?php foreach ($v->ipAddresses as $ip) { ?>
@@ -100,7 +115,7 @@ foreach ($vps as $v) {
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="16" class="text-right small text-muted">
+            <td colspan="17" class="text-right small text-muted">
               <?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?>
               <a id="refresh" href="vps.php?nocache"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a>
             </td>
@@ -113,7 +128,7 @@ foreach ($vps as $v) {
       </div>
     </div>
 
-    <div id="modal" class="modal fade">
+    <div id="modal-chart" class="modal fade">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-body">
@@ -122,6 +137,20 @@ foreach ($vps as $v) {
             </button>
             <canvas id="chart" width="468" height="400"></canvas>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="modal-info" class="modal fade">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body"></div>
         </div>
       </div>
     </div>
