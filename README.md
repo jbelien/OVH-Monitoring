@@ -5,7 +5,7 @@ OVH VPS/Cloud Monitoring via [OVH API](https://api.ovh.com/) using PHP.
 ## Installation
 
 ```
-composer require jbelien/ovh-monitoring
+composer create-project jbelien/ovh-monitoring
 ```
 
 ## Configuration
