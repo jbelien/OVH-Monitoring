@@ -1,3 +1,6 @@
+![](https://scrutinizer-ci.com/g/jbelien/OVH-Monitoring/badges/quality-score.png?b=master)
+![](https://scrutinizer-ci.com/g/jbelien/OVH-Monitoring/badges/build.png?b=master)
+
 # OVH-Monitoring
 
 OVH VPS/Cloud Monitoring via [OVH API](https://api.ovh.com/) using PHP.
