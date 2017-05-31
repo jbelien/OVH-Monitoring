@@ -2,10 +2,10 @@
 require '../vendor/autoload.php';
 
 $ini = parse_ini_file('../monitoring.ini');
-$ovh = new \Ovh\Api( $ini['application_key'], $ini['application_secret'], $ini['endpoint'], $ini['consumer_key'] );
+$ovh = new \Ovh\Api($ini['application_key'], $ini['application_secret'], $ini['endpoint'], $ini['consumer_key']);
 
 $cache = '../cache/vps.json';
-if (!file_exists($cache) || filemtime($cache) < (time() - 7*24*60*60) || isset($_GET['nocache'])) {
+if (!file_exists($cache) || filemtime($cache) < (time() - 7 * 24 * 60 * 60) || isset($_GET['nocache'])) {
   $json = array();
 
   $vps = $ovh->get('/vps');
