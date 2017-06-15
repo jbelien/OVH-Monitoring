@@ -5,12 +5,6 @@
 
 OVH VPS/Cloud Monitoring via [OVH API](https://api.ovh.com/) using PHP.
 
-## Installation
-
-```
-composer create-project jbelien/ovh-monitoring
-```
-
 ## Configuration
 
 ### First step
@@ -28,7 +22,21 @@ endpoint           = ovh-eu
 consumer_key       = your_consumer_key
 ```
 
-## Docker
+-----
+
+## Install using Composer
+
+### First step
+
+```
+composer create-project jbelien/ovh-monitoring
+```
+
+### Second step
+
+Create `monitoring.ini` file next to `public` directory (see [Configuration](#configuration)).
+
+## Install using Docker
 
 ### First step
 
@@ -44,8 +52,6 @@ Pull image from [Docker Hub](https://hub.docker.com/r/jbelien/ovh-monitoring/):
 docker pull jbelien/ovh-monitoring
 ```
 
-**Warning:** `monitoring.ini` file will be missing.
-
 ### Second step
 
 Create `monitoring.ini` file (see [Configuration](#configuration)).
@@ -57,6 +63,8 @@ Run Docker container with your `monitoring.ini` mount as volume:
 ```
 docker run --rm -p 80:80 -v "$PWD/monitoring.ini:/var/www/html/monitoring.ini" jbelien/ovh-monitoring
 ```
+
+**Warning:** You maybe will have to fix the path to `monitoring.ini` file (replace `$PWD/monitoring.ini` by the correct path).
 
 ### Fourth step
 
