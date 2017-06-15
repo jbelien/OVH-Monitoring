@@ -1,3 +1,5 @@
+/** global: Chart */
+
 var chart = null;
 var consoleId = 1;
 
@@ -233,7 +235,7 @@ function callBackDisk() {
           consoleId++;
         }
       } else {
-
+        // TODO: Handle multiple disks on VPS
       }
     });
   });

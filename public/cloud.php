@@ -15,7 +15,6 @@ if (!file_exists($cache) || filemtime($cache) < (time() - 7 * 24 * 60 * 60) || i
     $instances = array();
     $instance = $ovh->get('/cloud/project/'.$p.'/instance');
     foreach ($instance as $i) {
-      //$_i = $ovh->get('/cloud/project/'.$p.'/instance/'.$i);
       try {
         $i['flavor'] = $ovh->get('/cloud/project/'.$p.'/flavor/'.$i['flavorId']);
         $i['image'] = $ovh->get('/cloud/project/'.$p.'/image/'.$i['imageId']);

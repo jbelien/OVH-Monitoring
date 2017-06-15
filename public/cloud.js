@@ -1,3 +1,5 @@
+/** global: Chart */
+
 var chart = null;
 var consoleId = 1;
 
@@ -22,7 +24,6 @@ $(document).ready(function() {
 
   $("#modal-alert").on("show.bs.modal", function (event) {
     var tr = $(event.relatedTarget).closest("tr")
-    var project = $(tr).data("project");
     var instance = $(tr).data("instance");
     var alerts = $(tr).data("alerts")
 
