@@ -13,13 +13,13 @@ composer create-project jbelien/ovh-monitoring
 
 ## Configuration
 
-**First step:**
+### First step
 
 Create credentials : <https://api.ovh.com/createToken/index.cgi?GET=/vps*&GET=/cloud*&GET=/status*>
 
-**Second step:**
+### Second step
 
-Create `monitoring.ini` file (next to `public` directory) with your credentials :
+Create `monitoring.ini` file :
 
 ```
 application_key    = your_application_key
@@ -28,20 +28,36 @@ endpoint           = ovh-eu
 consumer_key       = your_consumer_key
 ```
 
-## Try with Docker
+## Docker
 
-**First build image**
+### First step
 
-`monitoring.ini` files are ignored, see `.dockerignore`.
+Build image from [GitHub](https://github.com/jbelien/OVH-Monitoring):
+```
+docker build --rm -t jbelien/ovh-monitoring https://github.com/jbelien/OVH-Monitoring.git
+```
+
+**OR**
+
+Pull image from [Docker Hub](https://hub.docker.com/r/jbelien/ovh-monitoring/):
+```
+docker pull jbelien/ovh-monitoring
+```
+
+**Warning:** `monitoring.ini` file will be missing.
+
+### Second step
+
+Create `monitoring.ini` file (see [Configuration](#configuration)).
+
+### Third step
+
+Run Docker container with your `monitoring.ini` mount as volume:
 
 ```
-docker build --rm -t jbelien/ovh-monitoring .
+docker run --rm -p 80:80 -v "$PWD/monitoring.ini:/var/www/html/monitoring.ini" jbelien/ovh-monitoring
 ```
 
-**Then run**
+### Fourth step
 
-With your monitoring.ini mount as volume.
-
-```
-docker run --rm -p 80:80 -v "$PWD/monitoring.ini.jeci:/var/www/html/monitoring.ini" jbelien/ovh-monitoring
-```
+Go to http://myserver/ (using port `80`) where `myserver` is the IP address of your server to have a look a the monitoring tool.

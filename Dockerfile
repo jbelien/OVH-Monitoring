@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y \
 
 RUN docker-php-ext-install -j$(nproc) zip gettext
 
-
 # FROM https://github.com/composer/docker/blob/master/1.4/Dockerfile
 ENV PATH "/composer/vendor/bin:$PATH"
 ENV COMPOSER_ALLOW_SUPERUSER 1
@@ -29,9 +28,6 @@ RUN curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/compos
  && composer --ansi --version --no-interaction \
  && composer require jbelien/ovh-monitoring
 
-
-
-#COPY config/php.ini /usr/local/etc/php/
 COPY . /var/www/html/
 
 RUN composer update
