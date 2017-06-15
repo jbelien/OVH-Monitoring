@@ -6,18 +6,19 @@ $ovh = new \Ovh\Api($ini['application_key'], $ini['application_secret'], $ini['e
 
 $cache = '../cache/cloud.json';
 if (!file_exists($cache) || filemtime($cache) < (time() - 7 * 24 * 60 * 60) || isset($_GET['nocache'])) {
-  $json = array(); $errors = array();
+  $json = array();
+  $errors = array();
 
   $project = $ovh->get('/cloud/project');
   foreach ($project as $p) {
-    $_p = $ovh->get('/cloud/project/'.$p);
+    $current = $ovh->get('/cloud/project/'.$p);
 
     $instances = array();
-    $instance = $ovh->get('/cloud/project/'.$p.'/instance');
+    $instance  = $ovh->get('/cloud/project/'.$p.'/instance');
     foreach ($instance as $i) {
       try {
         $i['flavor'] = $ovh->get('/cloud/project/'.$p.'/flavor/'.$i['flavorId']);
-        $i['image'] = $ovh->get('/cloud/project/'.$p.'/image/'.$i['imageId']);
+        $i['image']  = $ovh->get('/cloud/project/'.$p.'/image/'.$i['imageId']);
       } catch (Exception $e) {
         $errors[] = $e->getMessage();
       }
@@ -25,17 +26,17 @@ if (!file_exists($cache) || filemtime($cache) < (time() - 7 * 24 * 60 * 60) || i
       $instances[] = $i;
     }
 
-    $_p['instances'] = $instances;
+    $current['instances'] = $instances;
 
     $volumes = array();
-    $volume = $ovh->get('/cloud/project/'.$p.'/volume');
+    $volume  = $ovh->get('/cloud/project/'.$p.'/volume');
     foreach ($volume as $v) {
       $volumes[] = $v;
     }
 
-    $_p['volumes'] = $volumes;
+    $current['volumes'] = $volumes;
 
-    $json[] = $_p;
+    $json[] = $current;
   }
 
   if (!file_exists('../cache') || !is_dir('../cache')) { mkdir('../cache'); }
@@ -95,57 +96,57 @@ foreach ($project as $p) {
         <tbody>
 <?php foreach ($p->instances as $index => $i) { ?>
 <?php
-  $instance_volumes = array();
+  $instanceVolumes = array();
   foreach ($p->volumes as $v) {
     if (in_array($i->id, $v->attachedTo)) {
-      $instance_volumes[] = $v;
+      $instanceVolumes[] = $v;
     }
   }
 ?>
           <tr data-project="<?= $p->project_id ?>" data-instance="<?= $i->id ?>" class="<?= ($index % 2 === 0 ? 'even' : 'odd') ?>">
-            <th <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>>
+            <th <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?>>
               <?= $i->name ?><br>
               <small><?= $i->id ?></small>
             </th>
-            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>><a href="#modal-info" data-toggle="modal"><i class="fa fa-info-circle" aria-hidden="true"></i></a></td>
-            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-center alert-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
-            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>>
+            <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?>><a href="#modal-info" data-toggle="modal"><i class="fa fa-info-circle" aria-hidden="true"></i></a></td>
+            <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?> class="text-center alert-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
+            <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?>>
               <ul class="list-unstyled mb-0">
 <?php foreach ($i->ipAddresses as $ip) { ?>
                 <li><?= $ip->ip ?></li>
 <?php } ?>
               </ul>
             </td>
-            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>><?= $i->region ?></td>
-            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>><?= $i->flavor->type ?> - <?= $i->flavor->name ?> (<?= $i->flavor->osType ?>)</td>
-            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>><?= (isset($i->image) ? $i->image->name : '<span class="text-muted">N/A</span>') ?></td>
-            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-nowrap text-right"><?= $i->flavor->disk ?> Go</td>
-            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-right"><?= $i->flavor->vcpus ?></td>
-            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-nowrap text-right cpu-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
-            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-nowrap text-center"><a href="#cpu-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
-            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-nowrap text-right"><?= ($i->flavor->ram / 1000) ?> Go</td>
-            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-nowrap text-right ram-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
-            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-nowrap text-center"><a href="#ram-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
-<?php if (count($instance_volumes) === 0) { ?>
+            <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?>><?= $i->region ?></td>
+            <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?>><?= $i->flavor->type ?> - <?= $i->flavor->name ?> (<?= $i->flavor->osType ?>)</td>
+            <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?>><?= (isset($i->image) ? $i->image->name : '<span class="text-muted">N/A</span>') ?></td>
+            <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?> class="text-nowrap text-right"><?= $i->flavor->disk ?> Go</td>
+            <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?> class="text-right"><?= $i->flavor->vcpus ?></td>
+            <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?> class="text-nowrap text-right cpu-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
+            <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?> class="text-nowrap text-center"><a href="#cpu-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
+            <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?> class="text-nowrap text-right"><?= ($i->flavor->ram / 1000) ?> Go</td>
+            <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?> class="text-nowrap text-right ram-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
+            <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?> class="text-nowrap text-center"><a href="#ram-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
+<?php if (count($instanceVolumes) === 0) { ?>
             <td colspan="5"></td>
 <?php } else { ?>
-            <th><?= $instance_volumes[0]->name ?><br><small><?= $instance_volumes[0]->id ?></small></th>
-            <td style="vertical-align: middle;"><?= $instance_volumes[0]->region ?></td>
-            <td style="vertical-align: middle;"><?= $instance_volumes[0]->type ?></td>
-            <td style="vertical-align: middle;" class="text-nowrap text-right"><?= $instance_volumes[0]->size ?> Go</td>
-            <td style="vertical-align: middle;"><?= $instance_volumes[0]->status ?></td>
+            <th><?= $instanceVolumes[0]->name ?><br><small><?= $instanceVolumes[0]->id ?></small></th>
+            <td style="vertical-align: middle;"><?= $instanceVolumes[0]->region ?></td>
+            <td style="vertical-align: middle;"><?= $instanceVolumes[0]->type ?></td>
+            <td style="vertical-align: middle;" class="text-nowrap text-right"><?= $instanceVolumes[0]->size ?> Go</td>
+            <td style="vertical-align: middle;"><?= $instanceVolumes[0]->status ?></td>
 <?php } ?>
           </tr>
 <?php
-  if (count($instance_volumes) > 1) {
-    for ($k = 1; $k < count($instance_volumes); $k++) {
+  if (count($instanceVolumes) > 1) {
+    for ($k = 1; $k < count($instanceVolumes); $k++) {
 ?>
           <tr class="<?= ($index % 2 === 0 ? 'even' : 'odd') ?>">
-            <th><?= $instance_volumes[$k]->name ?><br><small><?= $instance_volumes[$k]->id ?></small></th>
-            <td style="vertical-align: middle;"><?= $instance_volumes[$k]->region ?></td>
-            <td style="vertical-align: middle;"><?= $instance_volumes[$k]->type ?></td>
-            <td style="vertical-align: middle;" class="text-nowrap text-right"><?= $instance_volumes[$k]->size ?> Go</td>
-            <td style="vertical-align: middle;"><?= $instance_volumes[$k]->status ?></td>
+            <th><?= $instanceVolumes[$k]->name ?><br><small><?= $instanceVolumes[$k]->id ?></small></th>
+            <td style="vertical-align: middle;"><?= $instanceVolumes[$k]->region ?></td>
+            <td style="vertical-align: middle;"><?= $instanceVolumes[$k]->type ?></td>
+            <td style="vertical-align: middle;" class="text-nowrap text-right"><?= $instanceVolumes[$k]->size ?> Go</td>
+            <td style="vertical-align: middle;"><?= $instanceVolumes[$k]->status ?></td>
           </tr>
 <?php
     }
