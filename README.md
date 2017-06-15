@@ -27,3 +27,21 @@ application_secret = your_application_secret
 endpoint           = ovh-eu
 consumer_key       = your_consumer_key
 ```
+
+## Try with Docker
+
+**First build image**
+
+`monitoring.ini` files are ignored, see `.dockerignore`.
+
+```
+docker build --rm -t jbelien/ovh-monitoring .
+```
+
+**Then run**
+
+With your monitoring.ini mount as volume.
+
+```
+docker run --rm -p 80:80 -v "$PWD/monitoring.ini.jeci:/var/www/html/monitoring.ini" jbelien/ovh-monitoring
+```
