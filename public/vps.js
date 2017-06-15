@@ -20,6 +20,27 @@ $(document).ready(function () {
     $("#modal-info .modal-body").empty().load("vps-xhr.php", params);
   });
 
+  $("#modal-alert").on("show.bs.modal", function (event) {
+    var tr = $(event.relatedTarget).closest("tr")
+    var vps = $(tr).data("vps");
+    var alerts = $(tr).data("alerts")
+
+    $("#modal-alert .modal-title").empty().html("<i class=\"fa fa-bell\" aria-hidden=\"true\"></i> " + vps);
+    $("#modal-alert .modal-body > table > tbody").empty();
+    for (var i = 0; i < alerts.length; i++) {
+      var row = document.createElement("tr");
+
+      $(row).append("<td>" + new Date(alerts[i].startDate).toString() + "</td>")
+      $(row).append("<td>" + alerts[i].reference + "</td>")
+      $(row).append("<td><strong>" + alerts[i].title + "</strong><br>" + alerts[i].details + "</td>")
+      $(row).append("<td>" + alerts[i].status + (alerts[i].status === "inProgress" ? " (" + alerts[i].progress + "%)" : "") + "</td>")
+      $(row).append("<td>" + alerts[i].type + "</td>")
+      $(row).append("<td>" + alerts[i].impact + "</td>")
+
+      $("#modal-alert .modal-body > table > tbody").append(row);
+    }
+  });
+
   $("a[href='#disk-chart'], a[href='#cpu-chart'], a[href='#ram-chart']").on("click", function (event) {
     event.preventDefault();
 
@@ -115,6 +136,8 @@ function callBackAlert() {
         var alerts = json[name].alerts || [];
         var status = json[name].status;
 
+        $(this).data("alerts", alerts);
+
         var badge = null;
         switch (status) {
           case "planned":
@@ -132,7 +155,7 @@ function callBackAlert() {
         }
 
         if (alerts.length > 0) {
-          $(td).html("<span class=\"badge badge-pill " + badge + "\">" + alerts.length + "</span>")
+          $(td).html("<a href=\"#modal-alert\" data-toggle=\"modal\"><span class=\"badge badge-pill " + badge + "\">" + alerts.length + "</span></a>")
         } else {
           $(td).empty();
         }

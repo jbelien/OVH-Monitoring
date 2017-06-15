@@ -178,6 +178,35 @@ foreach ($project as $p) {
       </div>
     </div>
 
+    <div id="modal-alert" class="modal fade">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped table-sm small">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Reference</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Type</th>
+                  <th>Impact</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="modal-chart" class="modal fade">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
