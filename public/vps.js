@@ -155,16 +155,16 @@ function callBackDisk() {
       var disks = json[name];
 
       if (disks.length === 1) {
-        if (typeof disks[0] === "object") {
-          $(this).find("td:eq(7)").
-            html("<span title=\"" + Math.round(disks[0][0]) + " " + disks[0][1] + "\" class=\"" + (disks[0][2] < 50 ? "text-success" : (disks[0][2] < 75 ? "text-warning" : "text-danger")) + "\">" + disks[0][2] + "%</span>")
-          } else {
-            $(this).find("td:eq(7)").
-              html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
+        var td = $(this).find("td.disk-live");
 
-            $("#console > ol").append("<li id=\"console-" + consoleId + "\"><samp>" + disks[0] + "</samp></li>");
-            consoleId++;
-          }
+        if (typeof disks[0] === "object") {
+          $(td).html("<span title=\"" + Math.round(disks[0][0]) + " " + disks[0][1] + "\" class=\"" + (disks[0][2] < 50 ? "text-success" : (disks[0][2] < 75 ? "text-warning" : "text-danger")) + "\">" + disks[0][2] + "%</span>");
+        } else {
+          $(td).html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
+
+          $("#console > ol").append("<li id=\"console-" + consoleId + "\"><samp>" + disks[0] + "</samp></li>");
+          consoleId++;
+        }
       } else {
 
       }
@@ -182,23 +182,19 @@ function callBackCPU() {
   }, function (json) {
     $("tr[data-vps]").each(function () {
       var name = $(this).data("vps");
+      var td = $(this).find("td.cpu-live");
 
       if (typeof json[name] === "object") {
-        $(this).find("td:eq(10)").
-          html("<span title=\"" + Math.round(json[name][0]) + " " + json[name][1] + "\" class=\"" + (json[name][2] < 50 ? "text-success" : (json[name][2] < 75 ? "text-warning" : "text-danger")) + "\">" + json[name][2] + "%</span>");
+        $(td).html("<span title=\"" + Math.round(json[name][0]) + " " + json[name][1] + "\" class=\"" + (json[name][2] < 50 ? "text-success" : (json[name][2] < 75 ? "text-warning" : "text-danger")) + "\">" + json[name][2] + "%</span>");
         if (json[name][3] === -1) {
-          $(this).find("td:eq(10)").
-            append(" <i class=\"fa fa-angle-double-down fa-fw\" aria-hidden=\"true\"></i>");
+          $(td).append(" <i class=\"fa fa-angle-double-down fa-fw\" aria-hidden=\"true\"></i>");
         } else if (json[name][3] === 1) {
-          $(this).find("td:eq(10)").
-            append(" <i class=\"fa fa-angle-double-up fa-fw\" aria-hidden=\"true\"></i>");
+          $(td).append(" <i class=\"fa fa-angle-double-up fa-fw\" aria-hidden=\"true\"></i>");
         } else {
-          $(this).find("td:eq(10)").
-            append(" <i class=\"fa fa-circle-thin fa-fw\" aria-hidden=\"true\" style=\"visibility: hidden;\"></i>");
+          $(td).append(" <i class=\"fa fa-circle-thin fa-fw\" aria-hidden=\"true\" style=\"visibility: hidden;\"></i>");
         }
       } else {
-        $(this).find("td:eq(10)").
-          html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
+        $(td).html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
 
         $("#console > ol").append("<li id=\"console-" + consoleId + "\"><samp>" + json[name] + "</samp></li>");
         consoleId++;
@@ -217,23 +213,19 @@ function callBackRAM() {
   }, function (json) {
     $("tr[data-vps]").each(function () {
       var name = $(this).data("vps");
+      var td = $(this).find("td.ram-live");
 
       if (typeof json[name] === "object") {
-        $(this).find("td:eq(13)").
-          html("<span title=\"" + Math.round(json[name][0]) + " " + json[name][1] + "\" class=\"" + (json[name][2] < 25 ? "text-success" : (json[name][2] < 75 ? "text-warning" : "text-danger")) + "\">" + json[name][2] + "%</span>");
+        $(td).html("<span title=\"" + Math.round(json[name][0]) + " " + json[name][1] + "\" class=\"" + (json[name][2] < 25 ? "text-success" : (json[name][2] < 75 ? "text-warning" : "text-danger")) + "\">" + json[name][2] + "%</span>");
         if (json[name][3] === -1) {
-          $(this).find("td:eq(13)").
-            append(" <i class=\"fa fa-angle-double-down fa-fw\" aria-hidden=\"true\"></i>");
+          $(td).append(" <i class=\"fa fa-angle-double-down fa-fw\" aria-hidden=\"true\"></i>");
         } else if (json[name][3] === 1) {
-          $(this).find("td:eq(13)").
-            append(" <i class=\"fa fa-angle-double-up fa-fw\" aria-hidden=\"true\"></i>");
+          $(td).append(" <i class=\"fa fa-angle-double-up fa-fw\" aria-hidden=\"true\"></i>");
         } else {
-          $(this).find("td:eq(13)").
-            append(" <i class=\"fa fa-circle-thin fa-fw\" aria-hidden=\"true\" style=\"visibility: hidden;\"></i>");
+          $(td).append(" <i class=\"fa fa-circle-thin fa-fw\" aria-hidden=\"true\" style=\"visibility: hidden;\"></i>");
         }
       } else {
-        $(this).find("td:eq(13)").
-          html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
+        $(td).html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
 
         $("#console > ol").append("<li id=\"console-" + consoleId + "\"><samp>" + json[name] + "</samp></li>");
         consoleId++;

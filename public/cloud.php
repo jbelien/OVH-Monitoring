@@ -120,10 +120,10 @@ foreach ($project as $p) {
             <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>><?= (isset($i->image) ? $i->image->name : '<span class="text-muted">N/A</span>') ?></td>
             <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-nowrap text-right"><?= $i->flavor->disk ?> Go</td>
             <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-right"><?= $i->flavor->vcpus ?></td>
-            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-nowrap text-right"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
+            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-nowrap text-right cpu-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-nowrap text-center"><a href="#cpu-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
             <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-nowrap text-right"><?= ($i->flavor->ram / 1000) ?> Go</td>
-            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-nowrap text-right"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
+            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-nowrap text-right ram-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-nowrap text-center"><a href="#ram-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
 <?php if (count($instance_volumes) === 0) { ?>
             <td colspan="5"></td>

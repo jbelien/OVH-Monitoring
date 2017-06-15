@@ -91,13 +91,13 @@ foreach ($vps as $v) {
             <td style="vertical-align: middle;"><?= $v->distribution->name ?></td>
             <td style="vertical-align: middle;" class="text-nowrap"><?= $v->distribution->bitFormat ?> bits</td>
             <td style="vertical-align: middle;" class="text-nowrap text-right"><?= $v->model->disk ?> Go</td>
-            <td style="vertical-align: middle;" class="text-nowrap text-right"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
+            <td style="vertical-align: middle;" class="text-nowrap text-right disk-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#disk-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
             <td style="vertical-align: middle;" class="text-right"><?= $v->vcore ?></td>
-            <td style="vertical-align: middle;" class="text-nowrap text-right"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
+            <td style="vertical-align: middle;" class="text-nowrap text-right cpu-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#cpu-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
             <td style="vertical-align: middle;" class="text-nowrap text-right"><?= ($v->memoryLimit / 1024) ?> Go</td>
-            <td style="vertical-align: middle;" class="text-nowrap text-right"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
+            <td style="vertical-align: middle;" class="text-nowrap text-right ram-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#ram-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
             <td style="vertical-align: middle;" class="text-nowrap">
               <span class="badge badge-default status-ping">ping</span>
