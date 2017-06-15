@@ -15,7 +15,7 @@ composer create-project jbelien/ovh-monitoring
 
 **First step:**
 
-Create credentials : <https://api.ovh.com/createToken/index.cgi?GET=/vps*&GET=/cloud*>
+Create credentials : <https://api.ovh.com/createToken/index.cgi?GET=/vps*&GET=/cloud*&GET=/status*>
 
 **Second step:**
 

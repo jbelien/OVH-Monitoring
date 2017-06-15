@@ -2,6 +2,7 @@ var chart = null;
 var consoleId = 1;
 
 $(document).ready(function () {
+  /*var intervalAlert = window.setInterval(callBackAlert, (5*60)*1000);*/ callBackAlert();
   /*var intervalStatus = window.setInterval(callBackStatus, (15*60)*1000);*/ callBackStatus();
   /*var intervalDisk = window.setInterval(callBackDisk, (5*60)*1000);*/ callBackDisk();
   /*var intervalCPU = window.setInterval(callBackCPU, (5*60)*1000);*/ callBackCPU();
@@ -101,6 +102,50 @@ $(document).ready(function () {
 /* ************************************************************************
  *
  */
+function callBackAlert() {
+  $.getJSON("alert-xhr.php", {
+    "vps": 1,
+    "time": Date.now()
+  }, function (json) {
+    $("tr[data-vps]").each(function () {
+      var name = $(this).data("vps");
+      var td = $(this).find("td.alert-live");
+
+      if (typeof json[name] !== "undefined") {
+        var alerts = json[name].alerts || [];
+        var status = json[name].status;
+
+        var badge = null;
+        switch (status) {
+          case "planned":
+            badge = "badge-warning";
+            break;
+          case "inProgress":
+            badge = "badge-danger";
+            break;
+          case "finished":
+            badge = "badge-info";
+            break;
+          default:
+            badge = "badge-default";
+            break;
+        }
+
+        if (alerts.length > 0) {
+          $(td).html("<span class=\"badge badge-pill " + badge + "\">" + alerts.length + "</span>")
+        } else {
+          $(td).empty();
+        }
+      } else {
+        $(td).empty();
+      }
+    });
+  });
+}
+
+/* ************************************************************************
+ *
+ */
 function callBackStatus() {
   $.getJSON("vps-xhr.php", {
     "status": 1,
@@ -153,10 +198,9 @@ function callBackDisk() {
     $("tr[data-vps]").each(function () {
       var name = $(this).data("vps");
       var disks = json[name];
+      var td = $(this).find("td.disk-live");
 
       if (disks.length === 1) {
-        var td = $(this).find("td.disk-live");
-
         if (typeof disks[0] === "object") {
           $(td).html("<span title=\"" + Math.round(disks[0][0]) + " " + disks[0][1] + "\" class=\"" + (disks[0][2] < 50 ? "text-success" : (disks[0][2] < 75 ? "text-warning" : "text-danger")) + "\">" + disks[0][2] + "%</span>");
         } else {

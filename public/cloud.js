@@ -2,6 +2,7 @@ var chart = null;
 var consoleId = 1;
 
 $(document).ready(function() {
+  /*var intervalAlert = window.setInterval(callBackAlert, (5*60)*1000);*/ callBackAlert();
   /*var intervalCPU = window.setInterval(callBackCPU, (5*60)*1000);*/ callBackCPU();
   /*var intervalRAM = window.setInterval(callBackRAM, (5*60)*1000);*/ callBackRAM();
 
@@ -99,6 +100,51 @@ $(document).ready(function() {
     });
   });
 });
+
+/* ************************************************************************
+ *
+ */
+ function callBackAlert() {
+   $.getJSON("alert-xhr.php", {
+     "cloud": 1,
+     "time": Date.now()
+   }, function (json) {
+     $("tr[data-instance]").each(function () {
+       var project = $(this).data("project");
+       var instance = $(this).data("instance");
+       var td = $(this).find("td.alert-live");
+
+       if (typeof json[project] !== "undefined" && typeof json[project][instance] !== "undefined") {
+         var alerts = json[project][instance].alerts || [];
+         var status = json[project][instance].status;
+
+         var badge = null;
+         switch (status) {
+           case "planned":
+             badge = "badge-warning";
+             break;
+           case "inProgress":
+             badge = "badge-danger";
+             break;
+           case "finished":
+             badge = "badge-info";
+             break;
+           default:
+             badge = "badge-default";
+             break;
+         }
+
+         if (alerts.length > 0) {
+           $(td).html("<span class=\"badge badge-pill " + badge + "\">" + alerts.length + "</span>")
+         } else {
+           $(td).empty();
+         }
+       } else {
+         $(td).empty();
+       }
+     });
+   });
+ }
 
 /* ************************************************************************
  *

@@ -78,6 +78,7 @@ foreach ($project as $p) {
           </tr>
           <tr>
             <th colspan="2"></th>
+            <th class="text-center"><i class="fa fa-bell" aria-hidden="true"></i></th>
             <th>IP</th>
             <th>Region</th>
             <th>Flavor</th>
@@ -108,6 +109,7 @@ foreach ($project as $p) {
               <small><?= $i->id ?></small>
             </th>
             <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>><a href="#modal-info" data-toggle="modal"><i class="fa fa-info-circle" aria-hidden="true"></i></a></td>
+            <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?> class="text-center alert-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td <?= (count($instance_volumes) > 1 ? 'rowspan="'.count($instance_volumes).'"' : '') ?>>
               <ul class="list-unstyled mb-0">
 <?php foreach ($i->ipAddresses as $ip) { ?>
@@ -154,7 +156,7 @@ foreach ($project as $p) {
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="18" class="text-right small text-muted">
+            <td colspan="19" class="text-right small text-muted">
               <?= _('Last update') ?> : <?= date('d.m.Y H:i', filemtime($cache)) ?>
               <a id="refresh" href="cloud.php?nocache"><i class="fa fa-refresh" aria-hidden="true"></i> Refresh</a>
             </td>
