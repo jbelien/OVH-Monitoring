@@ -2,7 +2,7 @@
 require '../vendor/autoload.php';
 
 $ini = parse_ini_file('../monitoring.ini');
-$ovh = new \Ovh\Api( $ini['application_key'], $ini['application_secret'], $ini['endpoint'], $ini['consumer_key'] );
+$ovh = new \Ovh\Api($ini['application_key'], $ini['application_secret'], $ini['endpoint'], $ini['consumer_key']);
 
 $cache = '../cache/vps.json';
 
@@ -35,8 +35,8 @@ else if (isset($_GET['disk'])) {
     $disks = $ovh->get('/vps/'.$v->name.'/disks');
     foreach ($disks as $i => $d) {
       try {
-        $max = $ovh->get('/vps/'.$v->name.'/disks/'.$d.'/use', array( 'type' => 'max' ));
-        $used = $ovh->get('/vps/'.$v->name.'/disks/'.$d.'/use', array( 'type' => 'used' ));
+        $max = $ovh->get('/vps/'.$v->name.'/disks/'.$d.'/use', array('type' => 'max'));
+        $used = $ovh->get('/vps/'.$v->name.'/disks/'.$d.'/use', array('type' => 'used'));
 
         if ($max['value'] > 0) {
           $result[$v->name][] = array($used['value'], $used['unit'], round($used['value'] / $max['value'] * 100));
@@ -61,8 +61,8 @@ else if (isset($_GET['disk-chart'], $_GET['vps'])) {
   $disks = $ovh->get('/vps/'.$_GET['vps'].'/disks');
   foreach ($disks as $i => $d) {
     try {
-      $max = $ovh->get('/vps/'.$_GET['vps'].'/disks/'.$d.'/monitoring', array( 'period' => 'lastweek', 'type' => 'max' ));
-      $used = $ovh->get('/vps/'.$_GET['vps'].'/disks/'.$d.'/monitoring', array( 'period' => 'lastweek', 'type' => 'used' ));
+      $max = $ovh->get('/vps/'.$_GET['vps'].'/disks/'.$d.'/monitoring', array('period' => 'lastweek', 'type' => 'max'));
+      $used = $ovh->get('/vps/'.$_GET['vps'].'/disks/'.$d.'/monitoring', array('period' => 'lastweek', 'type' => 'used'));
 
       $values = array();
       foreach ($max['values'] as $v) {
@@ -82,7 +82,7 @@ else if (isset($_GET['disk-chart'], $_GET['vps'])) {
       }
       $used['values'] = $values;
 
-      $result[] = array( 'max' => $max, 'used' => $used );
+      $result[] = array('max' => $max, 'used' => $used);
     } catch (Exception $e) {
       $result[] = $e->getMessage();
     }
@@ -101,13 +101,13 @@ else if (isset($_GET['cpu'])) {
   foreach ($vps as $v) {
     try {
       if (substr($v->model->version, 0, 4) === '2014') {
-        $max = $ovh->get('/vps/'.$v->name.'/use', array( 'type' => 'cpu:max' ));
-        $used = $ovh->get('/vps/'.$v->name.'/use', array( 'type' => 'cpu:used' ));
+        $max = $ovh->get('/vps/'.$v->name.'/use', array('type' => 'cpu:max'));
+        $used = $ovh->get('/vps/'.$v->name.'/use', array('type' => 'cpu:used'));
 
         $result[$v->name] = array($used['value'], $used['unit'], round($used['value'] / $max['value'] * 100));
       } else {
-        $max = $ovh->get('/vps/'.$v->name.'/monitoring', array( 'period' => 'today', 'type' => 'cpu:max' ));
-        $used = $ovh->get('/vps/'.$v->name.'/monitoring', array( 'period' => 'today', 'type' => 'cpu:used' ));
+        $max = $ovh->get('/vps/'.$v->name.'/monitoring', array('period' => 'today', 'type' => 'cpu:max'));
+        $used = $ovh->get('/vps/'.$v->name.'/monitoring', array('period' => 'today', 'type' => 'cpu:used'));
 
         $lastMax = array_pop($max['values']);
         $lastUsed = array_pop($used['values']);
@@ -132,8 +132,8 @@ else if (isset($_GET['cpu-chart'], $_GET['vps'])) {
   $result = array();
 
   try {
-    $max = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', array( 'period' => 'lastweek', 'type' => 'cpu:max' ));
-    $used = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', array( 'period' => 'lastweek', 'type' => 'cpu:used' ));
+    $max = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', array('period' => 'lastweek', 'type' => 'cpu:max'));
+    $used = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', array('period' => 'lastweek', 'type' => 'cpu:used'));
 
     $values = array();
     foreach ($max['values'] as $v) {
@@ -153,7 +153,7 @@ else if (isset($_GET['cpu-chart'], $_GET['vps'])) {
     }
     $used['values'] = $values;
 
-    $result[] = array( 'max' => $max, 'used' => $used );
+    $result[] = array('max' => $max, 'used' => $used);
   } catch (Exception $e) {
     $result[] = $e->getMessage();
   }
@@ -171,13 +171,13 @@ else if (isset($_GET['ram'])) {
   foreach ($vps as $v) {
     try {
       if (substr($v->model->version, 0, 4) === '2014') {
-        $max = $ovh->get('/vps/'.$v->name.'/use', array( 'type' => 'mem:max' ));
-        $used = $ovh->get('/vps/'.$v->name.'/use', array( 'type' => 'mem:used' ));
+        $max = $ovh->get('/vps/'.$v->name.'/use', array('type' => 'mem:max'));
+        $used = $ovh->get('/vps/'.$v->name.'/use', array('type' => 'mem:used'));
 
         $result[$v->name] = array($used['value'], $used['unit'], round($used['value'] / $max['value'] * 100));
       } else {
-        $max = $ovh->get('/vps/'.$v->name.'/monitoring', array( 'period' => 'today', 'type' => 'mem:max' ));
-        $used = $ovh->get('/vps/'.$v->name.'/monitoring', array( 'period' => 'today', 'type' => 'mem:used' ));
+        $max = $ovh->get('/vps/'.$v->name.'/monitoring', array('period' => 'today', 'type' => 'mem:max'));
+        $used = $ovh->get('/vps/'.$v->name.'/monitoring', array('period' => 'today', 'type' => 'mem:used'));
 
         $lastMax = array_pop($max['values']);
         $lastUsed = array_pop($used['values']);
@@ -202,8 +202,8 @@ else if (isset($_GET['ram-chart'], $_GET['vps'])) {
   $result = array();
 
   try {
-    $max = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', array( 'period' => 'lastweek', 'type' => 'mem:max' ));
-    $used = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', array( 'period' => 'lastweek', 'type' => 'mem:used' ));
+    $max = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', array('period' => 'lastweek', 'type' => 'mem:max'));
+    $used = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', array('period' => 'lastweek', 'type' => 'mem:used'));
 
     $values = array();
     foreach ($max['values'] as $v) {
@@ -223,7 +223,7 @@ else if (isset($_GET['ram-chart'], $_GET['vps'])) {
     }
     $used['values'] = $values;
 
-    $result[] = array( 'max' => $max, 'used' => $used );
+    $result[] = array('max' => $max, 'used' => $used);
   } catch (Exception $e) {
     $result[] = $e->getMessage();
   }

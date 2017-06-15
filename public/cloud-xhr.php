@@ -2,7 +2,7 @@
 require '../vendor/autoload.php';
 
 $ini = parse_ini_file('../monitoring.ini');
-$ovh = new \Ovh\Api( $ini['application_key'], $ini['application_secret'], $ini['endpoint'], $ini['consumer_key'] );
+$ovh = new \Ovh\Api($ini['application_key'], $ini['application_secret'], $ini['endpoint'], $ini['consumer_key']);
 
 $cache = '../cache/cloud.json';
 
@@ -19,8 +19,8 @@ if (isset($_GET['cpu'])) {
     $result[$p->project_id] = array();
     foreach ($p->instances as $i) {
       try {
-        $max = $ovh->get('/cloud/project/'.$p->project_id.'/instance/'.$i->id.'/monitoring', array( 'period' => 'today', 'type' => 'cpu:max' ));
-        $used = $ovh->get('/cloud/project/'.$p->project_id.'/instance/'.$i->id.'/monitoring', array( 'period' => 'today', 'type' => 'cpu:used' ));
+        $max = $ovh->get('/cloud/project/'.$p->project_id.'/instance/'.$i->id.'/monitoring', array('period' => 'today', 'type' => 'cpu:max'));
+        $used = $ovh->get('/cloud/project/'.$p->project_id.'/instance/'.$i->id.'/monitoring', array('period' => 'today', 'type' => 'cpu:used'));
 
         $lastMax = array_pop($max['values']);
         $lastUsed = array_pop($used['values']);
@@ -44,8 +44,8 @@ else if (isset($_GET['cpu-chart'], $_GET['project'], $_GET['instance'])) {
   $result = array();
 
   try {
-    $max = $ovh->get('/cloud/project/'.$_GET['project'].'/instance/'.$_GET['instance'].'/monitoring', array( 'period' => 'lastweek', 'type' => 'cpu:max' ));
-    $used = $ovh->get('/cloud/project/'.$_GET['project'].'/instance/'.$_GET['instance'].'/monitoring', array( 'period' => 'lastweek', 'type' => 'cpu:used' ));
+    $max = $ovh->get('/cloud/project/'.$_GET['project'].'/instance/'.$_GET['instance'].'/monitoring', array('period' => 'lastweek', 'type' => 'cpu:max'));
+    $used = $ovh->get('/cloud/project/'.$_GET['project'].'/instance/'.$_GET['instance'].'/monitoring', array('period' => 'lastweek', 'type' => 'cpu:used'));
 
     $values = array();
     foreach ($max['values'] as $v) {
@@ -65,7 +65,7 @@ else if (isset($_GET['cpu-chart'], $_GET['project'], $_GET['instance'])) {
     }
     $used['values'] = $values;
 
-    $result[] = array( 'max' => $max, 'used' => $used );
+    $result[] = array('max' => $max, 'used' => $used);
   } catch (Exception $e) {
     $result[] = $e->getMessage();
   }
@@ -83,8 +83,8 @@ else if (isset($_GET['ram'])) {
     $result[$p->project_id] = array();
     foreach ($p->instances as $i) {
       try {
-        $max = $ovh->get('/cloud/project/'.$p->project_id.'/instance/'.$i->id.'/monitoring', array( 'period' => 'today', 'type' => 'mem:max' ));
-        $used = $ovh->get('/cloud/project/'.$p->project_id.'/instance/'.$i->id.'/monitoring', array( 'period' => 'today', 'type' => 'mem:used' ));
+        $max = $ovh->get('/cloud/project/'.$p->project_id.'/instance/'.$i->id.'/monitoring', array('period' => 'today', 'type' => 'mem:max'));
+        $used = $ovh->get('/cloud/project/'.$p->project_id.'/instance/'.$i->id.'/monitoring', array('period' => 'today', 'type' => 'mem:used'));
 
         $lastMax = array_pop($max['values']);
         $lastUsed = array_pop($used['values']);
@@ -108,8 +108,8 @@ else if (isset($_GET['ram-chart'], $_GET['project'], $_GET['instance'])) {
   $result = array();
 
   try {
-    $max = $ovh->get('/cloud/project/'.$_GET['project'].'/instance/'.$_GET['instance'].'/monitoring', array( 'period' => 'lastweek', 'type' => 'mem:max' ));
-    $used = $ovh->get('/cloud/project/'.$_GET['project'].'/instance/'.$_GET['instance'].'/monitoring', array( 'period' => 'lastweek', 'type' => 'mem:used' ));
+    $max = $ovh->get('/cloud/project/'.$_GET['project'].'/instance/'.$_GET['instance'].'/monitoring', array('period' => 'lastweek', 'type' => 'mem:max'));
+    $used = $ovh->get('/cloud/project/'.$_GET['project'].'/instance/'.$_GET['instance'].'/monitoring', array('period' => 'lastweek', 'type' => 'mem:used'));
 
     $values = array();
     foreach ($max['values'] as $v) {
@@ -129,7 +129,7 @@ else if (isset($_GET['ram-chart'], $_GET['project'], $_GET['instance'])) {
     }
     $used['values'] = $values;
 
-    $result[] = array( 'max' => $max, 'used' => $used );
+    $result[] = array('max' => $max, 'used' => $used);
   } catch (Exception $e) {
     $result[] = $e->getMessage();
   }
