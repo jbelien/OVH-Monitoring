@@ -2,7 +2,7 @@
 require '../vendor/autoload.php';
 
 $ini = parse_ini_file('../monitoring.ini');
-$ovh = new \Ovh\Api( $ini['application_key'], $ini['application_secret'], $ini['endpoint'], $ini['consumer_key'] );
+$ovh = new \Ovh\Api($ini['application_key'], $ini['application_secret'], $ini['endpoint'], $ini['consumer_key']);
 
 header('Content-Type: application/json');
 
@@ -11,8 +11,12 @@ $status = $ovh->get('/status/task');
 $result = array();
 
 foreach ($status as $s) {
-  if (isset($_GET['cloud']) && $s['project'] !== 'PublicCloud') continue;
-  if (isset($_GET['vps']) && $s['project'] !== 'VPS') continue;
+  if (isset($_GET['cloud']) && $s['project'] !== 'PublicCloud') {
+    continue;
+  }
+  if (isset($_GET['vps']) && $s['project'] !== 'VPS') {
+    continue;
+  }
 
   if ($s['project'] === 'PublicCloud') {
     if (!isset($result[$s['impactedService']])) {
