@@ -8,7 +8,7 @@
 
 OVH VPS/Cloud Monitoring via [OVH API](https://api.ovh.com/) using PHP.
 
-![Screenshot](screenshot.png)
+![Screenshot](https://raw.githubusercontent.com/jbelien/OVH-Monitoring/master/screenshot.png)
 
 ## Configuration
 
