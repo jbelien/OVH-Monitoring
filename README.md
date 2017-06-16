@@ -8,6 +8,8 @@
 
 OVH VPS/Cloud Monitoring via [OVH API](https://api.ovh.com/) using PHP.
 
+![Screenshot](screenshot.png)
+
 ## Configuration
 
 ### First step
