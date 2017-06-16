@@ -73,7 +73,7 @@ foreach ($project as $p) {
       <table class="table table-bordered table-striped table-sm mt-3">
         <thead class="thead-inverse">
           <tr>
-            <th colspan="13">Instance</th>
+            <th colspan="14">Instance</th>
             <th colspan="5">Volume(s)</th>
           </tr>
           <tr>
