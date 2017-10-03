@@ -272,7 +272,7 @@ else if (isset($_REQUEST['info'], $_REQUEST['vps'])) {
         <td><?= $vps->infos->status ?></td>
       </tr>
       <tr>
-        <th><i class="fa fa-calendar" aria-hidden="true"></i> <?= _('Creation') ?></th>
+        <th><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> <?= _('Creation') ?></th>
         <td><?= $vps->infos->creation ?></td>
       </tr>
       <tr<?= ($diff->days < 30 ? ' class="text-warning"' : '') ?>>
@@ -292,15 +292,15 @@ else if (isset($_REQUEST['info'], $_REQUEST['vps'])) {
         </td>
       </tr>
       <tr>
-        <th><i class="fa fa-user" aria-hidden="true"></i> <?= _('Administration contact') ?></th>
+        <th><i class="fa fa-fw fa-user" aria-hidden="true"></i> <?= _('Administration contact') ?></th>
         <td><?= $vps->infos->contactAdmin ?></td>
       </tr>
       <tr>
-        <th><i class="fa fa-user" aria-hidden="true"></i> <?= _('Billing contact') ?></th>
+        <th><i class="fa fa-fw fa-user" aria-hidden="true"></i> <?= _('Billing contact') ?></th>
         <td><?= $vps->infos->contactBilling ?></td>
       </tr>
       <tr>
-        <th><i class="fa fa-user" aria-hidden="true"></i> <?= _('Technical contact') ?></th>
+        <th><i class="fa fa-fw fa-user" aria-hidden="true"></i> <?= _('Technical contact') ?></th>
         <td><?= $vps->infos->contactTech ?></td>
       </tr>
     </tbody>
