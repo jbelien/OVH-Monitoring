@@ -261,8 +261,8 @@ else if (isset($_REQUEST['info'], $_REQUEST['vps'])) {
   }
 
   if (!is_null($vps)) {
-    $d1 = new DateTime($vps->infos->expiration);
-    $d2 = new DateTime();
+    $d1 = new DateTime();
+    $d2 = new DateTime($vps->infos->expiration);
     $diff = $d1->diff($d2);
 ?>
   <table class="table table-sm table-striped">
@@ -276,12 +276,20 @@ else if (isset($_REQUEST['info'], $_REQUEST['vps'])) {
         <td><?= $vps->infos->creation ?></td>
       </tr>
       <tr<?= ($diff->days < 30 ? ' class="text-warning"' : '') ?>>
-        <th><i class="fa fa-calendar" aria-hidden="true"></i> <?= _('Expiration') ?></th>
-        <td><?= $vps->infos->expiration ?> (<?= sprintf(_('%d days'), $diff->days) ?>)</td>
+        <th><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> <?= _('Expiration') ?></th>
+        <td><?= $vps->infos->expiration ?> (<?= $diff->format('%r%a days') ?>)</td>
       </tr>
       <tr>
-        <th><i class="fa fa-credit-card" aria-hidden="true"></i> <?= _('Renewal') ?></th>
-        <td><?= $vps->infos->renewalType ?></td>
+        <th><i class="fa fa-fw fa-credit-card" aria-hidden="true"></i> <?= _('Renewal') ?></th>
+        <td>
+<?php
+  if ($vps->infos->renewalType === 'manual' || $vps->infos->renew->manualPayment === TRUE) {
+    echo _('Manual');
+  } else if ($vps->infos->renew->automatic === TRUE) {
+    echo sprintf(ngettext('Automatic: %d month', 'Automatic: %d months', $vps->infos->renew->period), $vps->infos->renew->period);
+  }
+?>
+        </td>
       </tr>
       <tr>
         <th><i class="fa fa-user" aria-hidden="true"></i> <?= _('Administration contact') ?></th>

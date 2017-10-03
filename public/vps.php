@@ -67,15 +67,15 @@ if (!file_exists($cache) || filemtime($cache) < (time() - 7 * 24 * 60 * 60) || i
 <?php
 $vps = json_decode(file_get_contents($cache));
 foreach ($vps as $v) {
-  $d1 = new DateTime($v->infos->expiration);
-  $d2 = new DateTime();
+  $d1 = new DateTime();
+  $d2 = new DateTime($v->infos->expiration);
   $diff = $d1->diff($d2);
   $expiration = ($diff->days <= 30);
 ?>
           <tr data-vps="<?= $v->name ?>"<?= (in_array($v->infos->status, array('expired', 'unPaid')) ? ' class="table-danger"' : '') ?>>
             <th class="text-nowrap">
 <?php if ($expiration === TRUE && $v->infos->renewalType === 'manual') { ?>
-              <span class="text-warning" title="<?= sprintf(_('Expiration in %d days'), $diff->days) ?>" style="cursor: help;">
+              <span class="text-warning" title="<?= $diff->format('Expiration in %r%a days') ?>" style="cursor: help;">
 <?php } ?>
               <?= $v->name ?><br>
               <small><?= $v->displayName ?></small>
