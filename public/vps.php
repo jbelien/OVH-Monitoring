@@ -11,9 +11,13 @@ if (!file_exists($cache) || filemtime($cache) < (time() - 7 * 24 * 60 * 60) || i
   $vps = $ovh->get('/vps');
   foreach ($vps as $v) {
     $_v = $ovh->get('/vps/'.$v);
-    $_v['distribution'] = $ovh->get('/vps/'.$v.'/distribution');
-    $_v['ipAddresses'] = $ovh->get('/vps/'.$v.'/ips');
+
     $_v['infos'] = $ovh->get('/vps/'.$v.'/serviceInfos');
+
+    if ($_v['infos']['status'] === 'ok') {
+      $_v['distribution'] = $ovh->get('/vps/'.$v.'/distribution');
+      $_v['ipAddresses'] = $ovh->get('/vps/'.$v.'/ips');
+    }
 
     $json[] = $_v;
   }
@@ -68,7 +72,7 @@ foreach ($vps as $v) {
   $diff = $d1->diff($d2);
   $expiration = ($diff->days <= 30);
 ?>
-          <tr data-vps="<?= $v->name ?>">
+          <tr data-vps="<?= $v->name ?>"<?= (in_array($v->infos->status, array('expired', 'unPaid')) ? ' class="table-danger"' : '') ?>>
             <th class="text-nowrap">
 <?php if ($expiration === TRUE && $v->infos->renewalType === 'manual') { ?>
               <span class="text-warning" title="<?= sprintf(_('Expiration in %d days'), $diff->days) ?>" style="cursor: help;">
@@ -82,23 +86,34 @@ foreach ($vps as $v) {
             <td class="text-center"><a href="#modal-info" data-toggle="modal"><i class="fa fa-info-circle" aria-hidden="true"></i></a></td>
             <td class="text-center alert-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td>
+<?php if (isset($v->ipAddresses)) { ?>
               <ul class="list-unstyled mb-0">
 <?php foreach ($v->ipAddresses as $ip) { ?>
                 <li><?= $ip ?></li>
 <?php } ?>
               </ul>
+<?php } ?>
             </td>
             <td style="text-nowrap"><?= $v->zone ?></td>
             <td class="text-nowrap"><?= $v->model->offer ?><br><em class="small"><?= $v->model->version ?> - <?= $v->model->name ?></em></td>
-            <td style="vertical-align: middle;"><?= $v->distribution->name ?></td>
-            <td style="vertical-align: middle;" class="text-nowrap"><?= $v->distribution->bitFormat ?> bits</td>
+            <td style="vertical-align: middle;"><?= (isset($v->distribution) ? $v->distribution->name : '') ?></td>
+            <td style="vertical-align: middle;" class="text-nowrap"><?= (isset($v->distribution) ? $v->distribution->bitFormat.' bits' : '') ?></td>
             <td style="vertical-align: middle;" class="text-nowrap text-right"><?= $v->model->disk ?> Go</td>
+<?php if (!in_array($v->infos->status, array('expired', 'unPaid'))) { ?>
             <td style="vertical-align: middle;" class="text-nowrap text-right disk-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#disk-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
+<?php } else { ?>
+            <td colspan="2"></td>
+<?php } ?>
             <td style="vertical-align: middle;" class="text-right"><?= $v->vcore ?></td>
+<?php if (!in_array($v->infos->status, array('expired', 'unPaid'))) { ?>
             <td style="vertical-align: middle;" class="text-nowrap text-right cpu-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#cpu-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
+<?php } else { ?>
+            <td colspan="2"></td>
+<?php } ?>
             <td style="vertical-align: middle;" class="text-nowrap text-right"><?= ($v->memoryLimit / 1024) ?> Go</td>
+<?php if (!in_array($v->infos->status, array('expired', 'unPaid'))) { ?>
             <td style="vertical-align: middle;" class="text-nowrap text-right ram-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#ram-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
             <td style="vertical-align: middle;" class="text-nowrap">
@@ -110,6 +125,10 @@ foreach ($vps as $v) {
               <span class="badge badge-default status-smtp">smtp</span>
               <span class="badge badge-default status-tools">tools</span>
             </td>
+<?php } else { ?>
+            <td colspan="2"></td>
+            <td></td>
+<?php } ?>
           </tr>
 <?php
 }

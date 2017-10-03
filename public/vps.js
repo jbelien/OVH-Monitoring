@@ -180,34 +180,35 @@ function callBackStatus() {
       var name = $(this).data("vps");
       var status = json[name];
 
-      $(this).find(".badge.status-ping").
-        removeClass(".badge-default .badge-success .badge-danger").
-        addClass((status.ping === "up" ? "badge-success" : "badge-danger"));
-      $(this).find(".badge.status-ssh").
-        removeClass(".badge-default .badge-success .badge-danger").
-        addClass((status.ssh.state === "up" ? "badge-success" : "badge-danger")).
-        attr("title", "Port " + status.ssh.port);
-      $(this).find(".badge.status-dns").
-        removeClass(".badge-default .badge-success .badge-danger").
-        addClass((status.dns.state === "up" ? "badge-success" : "badge-danger")).
-        attr("title", "Port " + status.dns.port);
-      $(this).find(".badge.status-http").
-        removeClass(".badge-default .badge-success .badge-danger").
-        addClass((status.http.state === "up" ? "badge-success" : "badge-danger")).
-        attr("title", "Port " + status.http.port);
-      $(this).find(".badge.status-https").
-        removeClass(".badge-default .badge-success .badge-danger").
-        addClass((status.https.state === "up" ? "badge-success" : "badge-danger")).
-        attr("title", "Port " + status.https.port);
-      $(this).find(".badge.status-smtp").
-        removeClass(".badge-default .badge-success .badge-danger").
-        addClass((status.smtp.state === "up" ? "badge-success" : "badge-danger")).
-        attr("title", "Port " + status.smtp.port);
+      if (typeof status !== "undefined") {
+        $(this).find(".badge.status-ping").
+          removeClass(".badge-default .badge-success .badge-danger").
+          addClass((status.ping === "up" ? "badge-success" : "badge-danger"));
+        $(this).find(".badge.status-ssh").
+          removeClass(".badge-default .badge-success .badge-danger").
+          addClass((status.ssh.state === "up" ? "badge-success" : "badge-danger")).
+          attr("title", "Port " + status.ssh.port);
+        $(this).find(".badge.status-dns").
+          removeClass(".badge-default .badge-success .badge-danger").
+          addClass((status.dns.state === "up" ? "badge-success" : "badge-danger")).
+          attr("title", "Port " + status.dns.port);
+        $(this).find(".badge.status-http").
+          removeClass(".badge-default .badge-success .badge-danger").
+          addClass((status.http.state === "up" ? "badge-success" : "badge-danger")).
+          attr("title", "Port " + status.http.port);
+        $(this).find(".badge.status-https").
+          removeClass(".badge-default .badge-success .badge-danger").
+          addClass((status.https.state === "up" ? "badge-success" : "badge-danger")).
+          attr("title", "Port " + status.https.port);
+        $(this).find(".badge.status-smtp").
+          removeClass(".badge-default .badge-success .badge-danger").
+          addClass((status.smtp.state === "up" ? "badge-success" : "badge-danger")).
+          attr("title", "Port " + status.smtp.port);
 
-
-      $(this).find(".badge.status-tools").
-        removeClass(".badge-default .badge-success .badge-danger").
-        addClass((status.tools !== null ? (status.tools === "up" ? "badge-success" : "badge-danger") : "badge-default"));
+        $(this).find(".badge.status-tools").
+          removeClass(".badge-default .badge-success .badge-danger").
+          addClass((status.tools !== null ? (status.tools === "up" ? "badge-success" : "badge-danger") : "badge-default"));
+      }
     });
   });
 }
@@ -223,19 +224,22 @@ function callBackDisk() {
     $("tr[data-vps]").each(function () {
       var name = $(this).data("vps");
       var disks = json[name];
-      var td = $(this).find("td.disk-live");
 
-      if (disks.length === 1) {
-        if (typeof disks[0] === "object") {
-          $(td).html("<span title=\"" + Math.round(disks[0][0]) + " " + disks[0][1] + "\" class=\"" + (disks[0][2] < 50 ? "text-success" : (disks[0][2] < 75 ? "text-warning" : "text-danger")) + "\">" + disks[0][2] + "%</span>");
+      if (typeof disks !== "undefined") {
+        var td = $(this).find("td.disk-live");
+
+        if (disks.length === 1) {
+          if (typeof disks[0] === "object") {
+            $(td).html("<span title=\"" + Math.round(disks[0][0]) + " " + disks[0][1] + "\" class=\"" + (disks[0][2] < 50 ? "text-success" : (disks[0][2] < 75 ? "text-warning" : "text-danger")) + "\">" + disks[0][2] + "%</span>");
+          } else {
+            $(td).html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
+
+            $("#console > ol").append("<li id=\"console-" + consoleId + "\"><samp>" + disks[0] + "</samp></li>");
+            consoleId++;
+          }
         } else {
-          $(td).html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
-
-          $("#console > ol").append("<li id=\"console-" + consoleId + "\"><samp>" + disks[0] + "</samp></li>");
-          consoleId++;
+          // TODO: Handle multiple disks on VPS
         }
-      } else {
-        // TODO: Handle multiple disks on VPS
       }
     });
   });
@@ -262,7 +266,7 @@ function callBackCPU() {
         } else {
           $(td).append(" <i class=\"fa fa-circle-thin fa-fw\" aria-hidden=\"true\" style=\"visibility: hidden;\"></i>");
         }
-      } else {
+      } else if (typeof json[name] !== "undefined") {
         $(td).html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
 
         $("#console > ol").append("<li id=\"console-" + consoleId + "\"><samp>" + json[name] + "</samp></li>");
@@ -293,7 +297,7 @@ function callBackRAM() {
         } else {
           $(td).append(" <i class=\"fa fa-circle-thin fa-fw\" aria-hidden=\"true\" style=\"visibility: hidden;\"></i>");
         }
-      } else {
+      } else if (typeof json[name] !== "undefined") {
         $(td).html("<span class=\"text-muted\">N/A</span><a href=\"#console-" + consoleId + "\"><sup>" + consoleId + "</sup></a>");
 
         $("#console > ol").append("<li id=\"console-" + consoleId + "\"><samp>" + json[name] + "</samp></li>");

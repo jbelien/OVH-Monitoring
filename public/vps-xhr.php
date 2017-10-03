@@ -14,6 +14,10 @@ if (isset($_GET['status'])) {
 
   $vps = json_decode(file_get_contents($cache));
   foreach ($vps as $v) {
+    if (in_array($v->infos->status, array('expired', 'unPaid'))) {
+      continue;
+    }
+
     $status = $ovh->get('/vps/'.$v->name.'/status');
 
     $result[$v->name] = $status;
@@ -30,6 +34,10 @@ else if (isset($_GET['disk'])) {
 
   $vps = json_decode(file_get_contents($cache));
   foreach ($vps as $v) {
+    if (in_array($v->infos->status, array('expired', 'unPaid'))) {
+      continue;
+    }
+
     $result[$v->name] = array();
 
     $disks = $ovh->get('/vps/'.$v->name.'/disks');
@@ -99,6 +107,10 @@ else if (isset($_GET['cpu'])) {
 
   $vps = json_decode(file_get_contents($cache));
   foreach ($vps as $v) {
+    if (in_array($v->infos->status, array('expired', 'unPaid'))) {
+      continue;
+    }
+
     try {
       if (substr($v->model->version, 0, 4) === '2014') {
         $max = $ovh->get('/vps/'.$v->name.'/use', array('type' => 'cpu:max'));
@@ -169,6 +181,10 @@ else if (isset($_GET['ram'])) {
 
   $vps = json_decode(file_get_contents($cache));
   foreach ($vps as $v) {
+    if (in_array($v->infos->status, array('expired', 'unPaid'))) {
+      continue;
+    }
+
     try {
       if (substr($v->model->version, 0, 4) === '2014') {
         $max = $ovh->get('/vps/'.$v->name.'/use', array('type' => 'mem:max'));
@@ -251,6 +267,10 @@ else if (isset($_REQUEST['info'], $_REQUEST['vps'])) {
 ?>
   <table class="table table-sm table-striped">
     <tbody>
+      <tr<?= (in_array($vps->infos->status, array('expired', 'unPaid')) ? ' class="text-danger"' : '') ?>>
+        <th><i class="fa fa-fw fa-circle" aria-hidden="true"></i> <?= _('Status') ?></th>
+        <td><?= $vps->infos->status ?></td>
+      </tr>
       <tr>
         <th><i class="fa fa-calendar" aria-hidden="true"></i> <?= _('Creation') ?></th>
         <td><?= $vps->infos->creation ?></td>
