@@ -28,7 +28,11 @@ if (isset($_GET['cpu'])) {
         $prevUsed = array_pop($used['values']);
         $status = (round($lastUsed['value']) > round($prevUsed['value']) ? 1 : (round($lastUsed['value']) < round($prevUsed['value']) ? -1 : 0));
 
-        $result[$p->project_id][$i->id] = array($lastUsed['value'], $used['unit'], round($lastUsed['value'] / $lastMax['value'] * 100), $status);
+        if ($lastMax['value'] > 0) {
+          $result[$p->project_id][$i->id] = array($lastUsed['value'], $used['unit'], round($lastUsed['value'] / $lastMax['value'] * 100), $status);
+        } else {
+          $result[$p->project_id][$i->id] = 'Max value = 0';
+        }
       } catch (Exception $e) {
         $result[$p->project_id][$i->id] = $e->getMessage();
       }
@@ -92,7 +96,11 @@ else if (isset($_GET['ram'])) {
         $prevUsed = array_pop($used['values']);
         $status = (round($lastUsed['value']) > round($prevUsed['value']) ? 1 : (round($lastUsed['value']) < round($prevUsed['value']) ? -1 : 0));
 
-        $result[$p->project_id][$i->id] = array($lastUsed['value'], $used['unit'], round($lastUsed['value'] / $lastMax['value'] * 100), $status);
+        if ($lastMax['value'] > 0) {
+          $result[$p->project_id][$i->id] = array($lastUsed['value'], $used['unit'], round($lastUsed['value'] / $lastMax['value'] * 100), $status);
+        } else {
+          $result[$p->project_id][$i->id] = 'Max value = 0';
+        }
       } catch (Exception $e) {
         $result[$p->project_id][$i->id] = $e->getMessage();
       }
