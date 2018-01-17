@@ -10,6 +10,11 @@ OVH VPS/Cloud Monitoring via [OVH API](https://api.ovh.com/) using PHP.
 
 ![Screenshot](https://raw.githubusercontent.com/jbelien/OVH-Monitoring/master/screenshot.png)
 
+## Requirements
+
+- PHP 7.0
+- PHP `gettext` extension
+
 ## Configuration
 
 ### First step
