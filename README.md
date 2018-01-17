@@ -12,7 +12,7 @@ OVH VPS/Cloud Monitoring via [OVH API](https://api.ovh.com/) using PHP.
 
 ## Requirements
 
-- PHP 7.0
+- PHP 7.0+
 - PHP `gettext` extension
 
 ## Configuration
