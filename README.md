@@ -44,7 +44,7 @@ composer create-project jbelien/ovh-monitoring
 
 ### Second step
 
-Create `monitoring.ini` file next to `public` directory (see [Configuration](#configuration)).
+Create `monitoring.ini` file **next** to `public/` folder (see [Configuration](#configuration)).
 
 ## Install using Docker
 
