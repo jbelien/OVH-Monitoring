@@ -23,7 +23,7 @@ Create credentials : <https://api.ovh.com/createToken/index.cgi?GET=/vps*&GET=/c
 
 ### Second step
 
-Create `monitoring.ini` file :
+Create `monitoring.ini` file **next** to `public/` folder :
 
 ```
 application_key    = your_application_key
