@@ -10,264 +10,263 @@ $cache = '../cache/vps.json';
  *
  */
 if (isset($_GET['status'])) {
-  $result = array();
+    $result = [];
 
-  $vps = json_decode(file_get_contents($cache));
-  foreach ($vps as $v) {
-    if (in_array($v->infos->status, array('expired', 'unPaid'))) {
-      continue;
-    }
-
-    $status = $ovh->get('/vps/'.$v->name.'/status');
-
-    $result[$v->name] = $status;
-  }
-
-  header('Content-Type: application/json');
-  echo json_encode($result);
-}
-/* ************************************************************************
- *
- */
-else if (isset($_GET['disk'])) {
-  $result = array();
-
-  $vps = json_decode(file_get_contents($cache));
-  foreach ($vps as $v) {
-    if (in_array($v->infos->status, array('expired', 'unPaid'))) {
-      continue;
-    }
-
-    $result[$v->name] = array();
-
-    $disks = $ovh->get('/vps/'.$v->name.'/disks');
-    foreach ($disks as $i => $d) {
-      try {
-        $max = $ovh->get('/vps/'.$v->name.'/disks/'.$d.'/use', array('type' => 'max'));
-        $used = $ovh->get('/vps/'.$v->name.'/disks/'.$d.'/use', array('type' => 'used'));
-
-        if ($max['value'] > 0) {
-          $result[$v->name][] = array($used['value'], $used['unit'], round($used['value'] / $max['value'] * 100));
-        } else {
-          $result[$v->name][] = 'Max value = 0';
+    $vps = json_decode(file_get_contents($cache));
+    foreach ($vps as $v) {
+        if (in_array($v->infos->status, ['expired', 'unPaid'])) {
+            continue;
         }
-      } catch (Exception $e) {
-        $result[$v->name][] = $e->getMessage();
-      }
-    }
-  }
 
-  header('Content-Type: application/json');
-  echo json_encode($result);
+        $status = $ovh->get('/vps/'.$v->name.'/status');
+
+        $result[$v->name] = $status;
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode($result);
 }
 /* ************************************************************************
  *
  */
-else if (isset($_GET['disk-chart'], $_GET['vps'])) {
-  $result = array();
+elseif (isset($_GET['disk'])) {
+    $result = [];
 
-  $disks = $ovh->get('/vps/'.$_GET['vps'].'/disks');
-  foreach ($disks as $i => $d) {
-    try {
-      $max = $ovh->get('/vps/'.$_GET['vps'].'/disks/'.$d.'/monitoring', array('period' => 'lastweek', 'type' => 'max'));
-      $used = $ovh->get('/vps/'.$_GET['vps'].'/disks/'.$d.'/monitoring', array('period' => 'lastweek', 'type' => 'used'));
+    $vps = json_decode(file_get_contents($cache));
+    foreach ($vps as $v) {
+        if (in_array($v->infos->status, ['expired', 'unPaid'])) {
+            continue;
+        }
 
-      $values = array();
-      foreach ($max['values'] as $v) {
-        $values[] = array(
+        $result[$v->name] = [];
+
+        $disks = $ovh->get('/vps/'.$v->name.'/disks');
+        foreach ($disks as $i => $d) {
+            try {
+                $max = $ovh->get('/vps/'.$v->name.'/disks/'.$d.'/use', ['type' => 'max']);
+                $used = $ovh->get('/vps/'.$v->name.'/disks/'.$d.'/use', ['type' => 'used']);
+
+                if ($max['value'] > 0) {
+                    $result[$v->name][] = [$used['value'], $used['unit'], round($used['value'] / $max['value'] * 100)];
+                } else {
+                    $result[$v->name][] = 'Max value = 0';
+                }
+            } catch (Exception $e) {
+                $result[$v->name][] = $e->getMessage();
+            }
+        }
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode($result);
+}
+/* ************************************************************************
+ *
+ */
+elseif (isset($_GET['disk-chart'], $_GET['vps'])) {
+    $result = [];
+
+    $disks = $ovh->get('/vps/'.$_GET['vps'].'/disks');
+    foreach ($disks as $i => $d) {
+        try {
+            $max = $ovh->get('/vps/'.$_GET['vps'].'/disks/'.$d.'/monitoring', ['period' => 'lastweek', 'type' => 'max']);
+            $used = $ovh->get('/vps/'.$_GET['vps'].'/disks/'.$d.'/monitoring', ['period' => 'lastweek', 'type' => 'used']);
+
+            $values = [];
+            foreach ($max['values'] as $v) {
+                $values[] = [
           'x' => date('c', $v['timestamp']),
-          'y' => $v['value']
-        );
-      }
-      $max['values'] = $values;
+          'y' => $v['value'],
+        ];
+            }
+            $max['values'] = $values;
 
-      $values = array();
-      foreach ($used['values'] as $v) {
-        $values[] = array(
+            $values = [];
+            foreach ($used['values'] as $v) {
+                $values[] = [
           'x' => date('c', $v['timestamp']),
-          'y' => $v['value']
-        );
-      }
-      $used['values'] = $values;
+          'y' => $v['value'],
+        ];
+            }
+            $used['values'] = $values;
 
-      $result[] = array('max' => $max, 'used' => $used);
-    } catch (Exception $e) {
-      $result[] = $e->getMessage();
+            $result[] = ['max' => $max, 'used' => $used];
+        } catch (Exception $e) {
+            $result[] = $e->getMessage();
+        }
     }
-  }
 
-  header('Content-Type: application/json');
-  echo json_encode($result);
+    header('Content-Type: application/json');
+    echo json_encode($result);
 }
 /* ************************************************************************
  *
  */
-else if (isset($_GET['cpu'])) {
-  $result = array();
+elseif (isset($_GET['cpu'])) {
+    $result = [];
 
-  $vps = json_decode(file_get_contents($cache));
-  foreach ($vps as $v) {
-    if (in_array($v->infos->status, array('expired', 'unPaid'))) {
-      continue;
+    $vps = json_decode(file_get_contents($cache));
+    foreach ($vps as $v) {
+        if (in_array($v->infos->status, ['expired', 'unPaid'])) {
+            continue;
+        }
+
+        try {
+            if (substr($v->model->version, 0, 4) === '2014') {
+                $max = $ovh->get('/vps/'.$v->name.'/use', ['type' => 'cpu:max']);
+                $used = $ovh->get('/vps/'.$v->name.'/use', ['type' => 'cpu:used']);
+
+                $result[$v->name] = [$used['value'], $used['unit'], round($used['value'] / $max['value'] * 100)];
+            } else {
+                $max = $ovh->get('/vps/'.$v->name.'/monitoring', ['period' => 'today', 'type' => 'cpu:max']);
+                $used = $ovh->get('/vps/'.$v->name.'/monitoring', ['period' => 'today', 'type' => 'cpu:used']);
+
+                $lastMax = array_pop($max['values']);
+                $lastUsed = array_pop($used['values']);
+
+                $prevUsed = array_pop($used['values']);
+                $status = (round($lastUsed['value']) > round($prevUsed['value']) ? 1 : (round($lastUsed['value']) < round($prevUsed['value']) ? -1 : 0));
+
+                $result[$v->name] = [$lastUsed['value'], $used['unit'], round($lastUsed['value'] / $lastMax['value'] * 100), $status];
+            }
+        } catch (Exception $e) {
+            $result[$v->name] = $e->getMessage();
+        }
     }
+
+    header('Content-Type: application/json');
+    echo json_encode($result);
+}
+/* ************************************************************************
+ *
+ */
+elseif (isset($_GET['cpu-chart'], $_GET['vps'])) {
+    $result = [];
 
     try {
-      if (substr($v->model->version, 0, 4) === '2014') {
-        $max = $ovh->get('/vps/'.$v->name.'/use', array('type' => 'cpu:max'));
-        $used = $ovh->get('/vps/'.$v->name.'/use', array('type' => 'cpu:used'));
+        $max = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', ['period' => 'lastweek', 'type' => 'cpu:max']);
+        $used = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', ['period' => 'lastweek', 'type' => 'cpu:used']);
 
-        $result[$v->name] = array($used['value'], $used['unit'], round($used['value'] / $max['value'] * 100));
-      } else {
-        $max = $ovh->get('/vps/'.$v->name.'/monitoring', array('period' => 'today', 'type' => 'cpu:max'));
-        $used = $ovh->get('/vps/'.$v->name.'/monitoring', array('period' => 'today', 'type' => 'cpu:used'));
+        $values = [];
+        foreach ($max['values'] as $v) {
+            $values[] = [
+        'x' => date('c', $v['timestamp']),
+        'y' => $v['value'],
+      ];
+        }
+        $max['values'] = $values;
 
-        $lastMax = array_pop($max['values']);
-        $lastUsed = array_pop($used['values']);
+        $values = [];
+        foreach ($used['values'] as $v) {
+            $values[] = [
+        'x' => date('c', $v['timestamp']),
+        'y' => $v['value'],
+      ];
+        }
+        $used['values'] = $values;
 
-        $prevUsed = array_pop($used['values']);
-        $status = (round($lastUsed['value']) > round($prevUsed['value']) ? 1 : (round($lastUsed['value']) < round($prevUsed['value']) ? -1 : 0));
-
-        $result[$v->name] = array($lastUsed['value'], $used['unit'], round($lastUsed['value'] / $lastMax['value'] * 100), $status);
-      }
+        $result[] = ['max' => $max, 'used' => $used];
     } catch (Exception $e) {
-      $result[$v->name] = $e->getMessage();
+        $result[] = $e->getMessage();
     }
-  }
 
-  header('Content-Type: application/json');
-  echo json_encode($result);
+    header('Content-Type: application/json');
+    echo json_encode($result);
 }
 /* ************************************************************************
  *
  */
-else if (isset($_GET['cpu-chart'], $_GET['vps'])) {
-  $result = array();
+elseif (isset($_GET['ram'])) {
+    $result = [];
 
-  try {
-    $max = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', array('period' => 'lastweek', 'type' => 'cpu:max'));
-    $used = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', array('period' => 'lastweek', 'type' => 'cpu:used'));
+    $vps = json_decode(file_get_contents($cache));
+    foreach ($vps as $v) {
+        if (in_array($v->infos->status, ['expired', 'unPaid'])) {
+            continue;
+        }
 
-    $values = array();
-    foreach ($max['values'] as $v) {
-      $values[] = array(
-        'x' => date('c', $v['timestamp']),
-        'y' => $v['value']
-      );
+        try {
+            if (substr($v->model->version, 0, 4) === '2014') {
+                $max = $ovh->get('/vps/'.$v->name.'/use', ['type' => 'mem:max']);
+                $used = $ovh->get('/vps/'.$v->name.'/use', ['type' => 'mem:used']);
+
+                $result[$v->name] = [$used['value'], $used['unit'], round($used['value'] / $max['value'] * 100)];
+            } else {
+                $max = $ovh->get('/vps/'.$v->name.'/monitoring', ['period' => 'today', 'type' => 'mem:max']);
+                $used = $ovh->get('/vps/'.$v->name.'/monitoring', ['period' => 'today', 'type' => 'mem:used']);
+
+                $lastMax = array_pop($max['values']);
+                $lastUsed = array_pop($used['values']);
+
+                $prevUsed = array_pop($used['values']);
+                $status = (round($lastUsed['value']) > round($prevUsed['value']) ? 1 : (round($lastUsed['value']) < round($prevUsed['value']) ? -1 : 0));
+
+                $result[$v->name] = [$lastUsed['value'], $used['unit'], round($lastUsed['value'] / $lastMax['value'] * 100), $status];
+            }
+        } catch (Exception $e) {
+            $result[$v->name] = $e->getMessage();
+        }
     }
-    $max['values'] = $values;
 
-    $values = array();
-    foreach ($used['values'] as $v) {
-      $values[] = array(
-        'x' => date('c', $v['timestamp']),
-        'y' => $v['value']
-      );
-    }
-    $used['values'] = $values;
-
-    $result[] = array('max' => $max, 'used' => $used);
-  } catch (Exception $e) {
-    $result[] = $e->getMessage();
-  }
-
-  header('Content-Type: application/json');
-  echo json_encode($result);
+    header('Content-Type: application/json');
+    echo json_encode($result);
 }
 /* ************************************************************************
  *
  */
-else if (isset($_GET['ram'])) {
-  $result = array();
-
-  $vps = json_decode(file_get_contents($cache));
-  foreach ($vps as $v) {
-    if (in_array($v->infos->status, array('expired', 'unPaid'))) {
-      continue;
-    }
+elseif (isset($_GET['ram-chart'], $_GET['vps'])) {
+    $result = [];
 
     try {
-      if (substr($v->model->version, 0, 4) === '2014') {
-        $max = $ovh->get('/vps/'.$v->name.'/use', array('type' => 'mem:max'));
-        $used = $ovh->get('/vps/'.$v->name.'/use', array('type' => 'mem:used'));
+        $max = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', ['period' => 'lastweek', 'type' => 'mem:max']);
+        $used = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', ['period' => 'lastweek', 'type' => 'mem:used']);
 
-        $result[$v->name] = array($used['value'], $used['unit'], round($used['value'] / $max['value'] * 100));
-      } else {
-        $max = $ovh->get('/vps/'.$v->name.'/monitoring', array('period' => 'today', 'type' => 'mem:max'));
-        $used = $ovh->get('/vps/'.$v->name.'/monitoring', array('period' => 'today', 'type' => 'mem:used'));
+        $values = [];
+        foreach ($max['values'] as $v) {
+            $values[] = [
+        'x' => date('c', $v['timestamp']),
+        'y' => $v['value'],
+      ];
+        }
+        $max['values'] = $values;
 
-        $lastMax = array_pop($max['values']);
-        $lastUsed = array_pop($used['values']);
+        $values = [];
+        foreach ($used['values'] as $v) {
+            $values[] = [
+        'x' => date('c', $v['timestamp']),
+        'y' => $v['value'],
+      ];
+        }
+        $used['values'] = $values;
 
-        $prevUsed = array_pop($used['values']);
-        $status = (round($lastUsed['value']) > round($prevUsed['value']) ? 1 : (round($lastUsed['value']) < round($prevUsed['value']) ? -1 : 0));
-
-        $result[$v->name] = array($lastUsed['value'], $used['unit'], round($lastUsed['value'] / $lastMax['value'] * 100), $status);
-      }
+        $result[] = ['max' => $max, 'used' => $used];
     } catch (Exception $e) {
-      $result[$v->name] = $e->getMessage();
+        $result[] = $e->getMessage();
     }
-  }
 
-  header('Content-Type: application/json');
-  echo json_encode($result);
+    header('Content-Type: application/json');
+    echo json_encode($result);
 }
 /* ************************************************************************
  *
  */
-else if (isset($_GET['ram-chart'], $_GET['vps'])) {
-  $result = array();
-
-  try {
-    $max = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', array('period' => 'lastweek', 'type' => 'mem:max'));
-    $used = $ovh->get('/vps/'.$_GET['vps'].'/monitoring', array('period' => 'lastweek', 'type' => 'mem:used'));
-
-    $values = array();
-    foreach ($max['values'] as $v) {
-      $values[] = array(
-        'x' => date('c', $v['timestamp']),
-        'y' => $v['value']
-      );
+elseif (isset($_REQUEST['info'], $_REQUEST['vps'])) {
+    $json = json_decode(file_get_contents($cache));
+    $vps = null;
+    foreach ($json as $j) {
+        if ($j->name === $_REQUEST['vps']) {
+            $vps = $j;
+            break;
+        }
     }
-    $max['values'] = $values;
 
-    $values = array();
-    foreach ($used['values'] as $v) {
-      $values[] = array(
-        'x' => date('c', $v['timestamp']),
-        'y' => $v['value']
-      );
-    }
-    $used['values'] = $values;
-
-    $result[] = array('max' => $max, 'used' => $used);
-  } catch (Exception $e) {
-    $result[] = $e->getMessage();
-  }
-
-  header('Content-Type: application/json');
-  echo json_encode($result);
-}
-/* ************************************************************************
- *
- */
-else if (isset($_REQUEST['info'], $_REQUEST['vps'])) {
-  $json = json_decode(file_get_contents($cache));
-  $vps = NULL;
-  foreach ($json as $j) {
-    if ($j->name === $_REQUEST['vps']) {
-      $vps = $j;
-      break;
-    }
-  }
-
-  if (!is_null($vps)) {
-    $d1 = new DateTime();
-    $d2 = new DateTime($vps->infos->expiration);
-    $diff = $d1->diff($d2);
-?>
+    if (!is_null($vps)) {
+        $d1 = new DateTime();
+        $d2 = new DateTime($vps->infos->expiration);
+        $diff = $d1->diff($d2); ?>
   <table class="table table-sm table-striped">
     <tbody>
-      <tr<?= (in_array($vps->infos->status, array('expired', 'unPaid')) ? ' class="text-danger"' : '') ?>>
+      <tr<?= (in_array($vps->infos->status, ['expired', 'unPaid']) ? ' class="text-danger"' : '') ?>>
         <th><i class="fa fa-fw fa-circle" aria-hidden="true"></i> <?= _('Status') ?></th>
         <td><?= $vps->infos->status ?></td>
       </tr>
@@ -283,12 +282,11 @@ else if (isset($_REQUEST['info'], $_REQUEST['vps'])) {
         <th><i class="fa fa-fw fa-credit-card" aria-hidden="true"></i> <?= _('Renewal') ?></th>
         <td>
 <?php
-  if ($vps->infos->renewalType === 'manual' || $vps->infos->renew->manualPayment === TRUE) {
-    echo _('Manual');
-  } else if ($vps->infos->renew->automatic === TRUE) {
-    echo sprintf(ngettext('Automatic: %d month', 'Automatic: %d months', $vps->infos->renew->period), $vps->infos->renew->period);
-  }
-?>
+  if ($vps->infos->renewalType === 'manual' || $vps->infos->renew->manualPayment === true) {
+      echo _('Manual');
+  } elseif ($vps->infos->renew->automatic === true) {
+      echo sprintf(ngettext('Automatic: %d month', 'Automatic: %d months', $vps->infos->renew->period), $vps->infos->renew->period);
+  } ?>
         </td>
       </tr>
       <tr>
@@ -306,7 +304,7 @@ else if (isset($_REQUEST['info'], $_REQUEST['vps'])) {
     </tbody>
   </table>
 <?php
-  }
+    }
 }
 
 exit();
