@@ -6,41 +6,43 @@ $ovh = new \Ovh\Api($ini['application_key'], $ini['application_secret'], $ini['e
 
 $cache = '../cache/cloud.json';
 if (!file_exists($cache) || filemtime($cache) < (time() - 7 * 24 * 60 * 60) || isset($_GET['nocache'])) {
-  $json = array();
-  $errors = array();
+    $json = [];
+    $errors = [];
 
-  $project = $ovh->get('/cloud/project');
-  foreach ($project as $p) {
-    $current = $ovh->get('/cloud/project/'.$p);
+    $project = $ovh->get('/cloud/project');
+    foreach ($project as $p) {
+        $current = $ovh->get('/cloud/project/'.$p);
 
-    $instances = array();
-    $instance  = $ovh->get('/cloud/project/'.$p.'/instance');
-    foreach ($instance as $i) {
-      try {
-        $i['flavor'] = $ovh->get('/cloud/project/'.$p.'/flavor/'.$i['flavorId']);
-        $i['image']  = $ovh->get('/cloud/project/'.$p.'/image/'.$i['imageId']);
-      } catch (Exception $e) {
-        $errors[] = $e->getMessage();
-      }
+        $instances = [];
+        $instance = $ovh->get('/cloud/project/'.$p.'/instance');
+        foreach ($instance as $i) {
+            try {
+                $i['flavor'] = $ovh->get('/cloud/project/'.$p.'/flavor/'.$i['flavorId']);
+                $i['image'] = $ovh->get('/cloud/project/'.$p.'/image/'.$i['imageId']);
+            } catch (Exception $e) {
+                $errors[] = $e->getMessage();
+            }
 
-      $instances[] = $i;
+            $instances[] = $i;
+        }
+
+        $current['instances'] = $instances;
+
+        $volumes = [];
+        $volume = $ovh->get('/cloud/project/'.$p.'/volume');
+        foreach ($volume as $v) {
+            $volumes[] = $v;
+        }
+
+        $current['volumes'] = $volumes;
+
+        $json[] = $current;
     }
 
-    $current['instances'] = $instances;
-
-    $volumes = array();
-    $volume  = $ovh->get('/cloud/project/'.$p.'/volume');
-    foreach ($volume as $v) {
-      $volumes[] = $v;
+    if (!file_exists('../cache') || !is_dir('../cache')) {
+        mkdir('../cache');
     }
-
-    $current['volumes'] = $volumes;
-
-    $json[] = $current;
-  }
-
-  if (!file_exists('../cache') || !is_dir('../cache')) { mkdir('../cache'); }
-  file_put_contents($cache, json_encode($json, JSON_PRETTY_PRINT));
+    file_put_contents($cache, json_encode($json, JSON_PRETTY_PRINT));
 }
 ?>
 <!DOCTYPE html>
@@ -68,7 +70,7 @@ if (!file_exists($cache) || filemtime($cache) < (time() - 7 * 24 * 60 * 60) || i
 <?php
 $project = json_decode(file_get_contents($cache));
 foreach ($project as $p) {
-?>
+    ?>
       <h2 class="mt-3">Project &laquo; <?= $p->description ?> &raquo;<br><small><?= $p->project_id ?></small></h2>
       <table class="table table-bordered table-striped table-sm mt-3">
         <thead class="thead-inverse">
@@ -94,15 +96,15 @@ foreach ($project as $p) {
           </tr>
         </thead>
         <tbody>
-<?php foreach ($p->instances as $index => $i) { ?>
+<?php foreach ($p->instances as $index => $i) {
+        ?>
 <?php
-  $instanceVolumes = array();
-  foreach ($p->volumes as $v) {
-    if (in_array($i->id, $v->attachedTo)) {
-      $instanceVolumes[] = $v;
-    }
-  }
-?>
+  $instanceVolumes = [];
+        foreach ($p->volumes as $v) {
+            if (in_array($i->id, $v->attachedTo)) {
+                $instanceVolumes[] = $v;
+            }
+        } ?>
           <tr data-project="<?= $p->project_id ?>" data-instance="<?= $i->id ?>" class="<?= ($index % 2 === 0 ? 'even' : 'odd') ?>">
             <th <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?>>
               <?= $i->name ?><br>
@@ -112,9 +114,11 @@ foreach ($project as $p) {
             <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?> class="text-center alert-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?>>
               <ul class="list-unstyled mb-0">
-<?php foreach ($i->ipAddresses as $ip) { ?>
+<?php foreach ($i->ipAddresses as $ip) {
+            ?>
                 <li><?= $ip->ip ?></li>
-<?php } ?>
+<?php
+        } ?>
               </ul>
             </td>
             <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?>><?= $i->region ?></td>
@@ -127,20 +131,24 @@ foreach ($project as $p) {
             <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?> class="text-nowrap text-right"><?= ($i->flavor->ram / 1000) ?> Go</td>
             <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?> class="text-nowrap text-right ram-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td <?= (count($instanceVolumes) > 1 ? 'rowspan="'.count($instanceVolumes).'"' : '') ?> class="text-nowrap text-center"><a href="#ram-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
-<?php if (count($instanceVolumes) === 0) { ?>
+<?php if (count($instanceVolumes) === 0) {
+            ?>
             <td colspan="5"></td>
-<?php } else { ?>
+<?php
+        } else {
+            ?>
             <th><?= $instanceVolumes[0]->name ?><br><small><?= $instanceVolumes[0]->id ?></small></th>
             <td style="vertical-align: middle;"><?= $instanceVolumes[0]->region ?></td>
             <td style="vertical-align: middle;"><?= $instanceVolumes[0]->type ?></td>
             <td style="vertical-align: middle;" class="text-nowrap text-right"><?= $instanceVolumes[0]->size ?> Go</td>
             <td style="vertical-align: middle;"><?= $instanceVolumes[0]->status ?></td>
-<?php } ?>
+<?php
+        } ?>
           </tr>
 <?php
   if (count($instanceVolumes) > 1) {
-    for ($k = 1; $k < count($instanceVolumes); $k++) {
-?>
+      for ($k = 1; $k < count($instanceVolumes); $k++) {
+          ?>
           <tr class="<?= ($index % 2 === 0 ? 'even' : 'odd') ?>">
             <th><?= $instanceVolumes[$k]->name ?><br><small><?= $instanceVolumes[$k]->id ?></small></th>
             <td style="vertical-align: middle;"><?= $instanceVolumes[$k]->region ?></td>
@@ -149,10 +157,10 @@ foreach ($project as $p) {
             <td style="vertical-align: middle;"><?= $instanceVolumes[$k]->status ?></td>
           </tr>
 <?php
-    }
-  }
-?>
-<?php } ?>
+      }
+  } ?>
+<?php
+    } ?>
         </tbody>
         <tfoot>
           <tr>
@@ -167,13 +175,17 @@ foreach ($project as $p) {
 }
 ?>
       <div id="console" class="text-danger small">
-<?php if (!empty($errors)) { ?>
+<?php if (!empty($errors)) {
+    ?>
         <ul>
-<?php foreach ($errors as $e) { ?>
+<?php foreach ($errors as $e) {
+        ?>
           <li><?= $e ?></li>
-<?php } ?>
+<?php
+    } ?>
         </ul>
-<?php } ?>
+<?php
+} ?>
         <ol></ol>
       </div>
     </div>
