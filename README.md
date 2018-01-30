@@ -1,8 +1,6 @@
 ![Release](https://img.shields.io/github/release/jbelien/ovh-monitoring.svg)
 [![Docker build](https://img.shields.io/docker/automated/jbelien/ovh-monitoring.svg)](https://hub.docker.com/r/jbelien/ovh-monitoring/)
 [![Docker build](https://img.shields.io/docker/build/jbelien/ovh-monitoring.svg)](https://hub.docker.com/r/jbelien/ovh-monitoring/)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/jbelien/OVH-Monitoring/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/jbelien/OVH-Monitoring/?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/jbelien/OVH-Monitoring/badges/build.png?b=master)](https://scrutinizer-ci.com/g/jbelien/OVH-Monitoring/build-status/master)
 
 # OVH-Monitoring
 
