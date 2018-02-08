@@ -1,128 +1,9 @@
-/** global: Chart */
+/*global Chart*/
 
 var chart = null;
 var consoleId = 1;
 
-$(document).ready(function () {
-  /*var intervalAlert = window.setInterval(callBackAlert, (5*60)*1000);*/ callBackAlert();
-  /*var intervalStatus = window.setInterval(callBackStatus, (15*60)*1000);*/ callBackStatus();
-  /*var intervalDisk = window.setInterval(callBackDisk, (5*60)*1000);*/ callBackDisk();
-  /*var intervalCPU = window.setInterval(callBackCPU, (5*60)*1000);*/ callBackCPU();
-  /*var intervalRAM = window.setInterval(callBackRAM, (5*60)*1000);*/ callBackRAM();
-
-  $("#modal-info").on("show.bs.modal", function (event) {
-    var vps = $(event.relatedTarget).closest("tr").data("vps");
-    var params = {
-      "info": 1,
-      "time": Date.now(),
-      "vps": vps
-    };
-
-    $("#modal-info .modal-title").empty().html("<i class=\"fa fa-info-circle\" aria-hidden=\"true\"></i> " + vps);
-    $("#modal-info .modal-body").empty().load("vps-xhr.php", params);
-  });
-
-  $("#modal-alert").on("show.bs.modal", function (event) {
-    var tr = $(event.relatedTarget).closest("tr")
-    var vps = $(tr).data("vps");
-    var alerts = $(tr).data("alerts")
-
-    $("#modal-alert .modal-title").empty().html("<i class=\"fa fa-bell\" aria-hidden=\"true\"></i> " + vps);
-    $("#modal-alert .modal-body > table > tbody").empty();
-    for (var i = 0; i < alerts.length; i++) {
-      var row = document.createElement("tr");
-
-      $(row).append("<td>" + new Date(alerts[i].startDate).toString() + "</td>")
-      $(row).append("<td>" + alerts[i].reference + "</td>")
-      $(row).append("<td><strong>" + alerts[i].title + "</strong><br>" + alerts[i].details + "</td>")
-      $(row).append("<td>" + alerts[i].status + (alerts[i].status === "inProgress" ? " (" + alerts[i].progress + "%)" : "") + "</td>")
-      $(row).append("<td>" + alerts[i].type + "</td>")
-      $(row).append("<td>" + alerts[i].impact + "</td>")
-
-      $("#modal-alert .modal-body > table > tbody").append(row);
-    }
-  });
-
-  $("a[href='#disk-chart'], a[href='#cpu-chart'], a[href='#ram-chart']").on("click", function (event) {
-    event.preventDefault();
-
-    $("body").css("opacity", "0.3");
-
-    var vps = $(this).closest("tr").data("vps");
-    var title = vps;
-
-    var params = {
-      "time": Date.now(),
-      "vps": vps
-    };
-    if ($(this).is("a[href='#disk-chart']")) {
-      params["disk-chart"] = 1;
-      title += " (Disk)";
-    } else if ($(this).is("a[href='#cpu-chart']")) {
-      params["cpu-chart"] = 1;
-      title += " (CPU)";
-    } else if ($(this).is("a[href='#ram-chart']")) {
-      params["ram-chart"] = 1;
-      title += " (RAM)";
-    }
-
-    $.getJSON("vps-xhr.php", params, function (json) {
-      var ctx = $("#chart");
-
-      var data = {
-        datasets: [
-          {
-            backgroundColor: "rgba(255,0,0,0.3)",
-            borderColor: "rgba(255,0,0,0.7)",
-            label: "Max (" + json[0]["max"]["unit"] + ")",
-            data: json[0]["max"]["values"],
-            fill: false,
-            pointRadius: 0
-          },
-          {
-            backgroundColor: "rgba(0,128,255,0.3)",
-            borderColor: "rgba(0,128,255,0.7)",
-            label: "Used (" + json[0]["used"]["unit"] + ")",
-            data: json[0]["used"]["values"],
-            fill: true,
-            pointRadius: 0
-          }
-        ]
-      };
-
-      if (chart !== null) { chart.destroy(); }
-      chart = new Chart(ctx, {
-          data: data,
-          options: {
-            scales: {
-              xAxes: [{
-                time: {
-                  unit: "day"
-                },
-                type: "time"
-              }],
-              yAxes: [{
-                ticks: {
-                  beginAtZero: true
-                }
-              }]
-            },
-            title: {
-              display: true,
-              text: title
-            }
-          },
-          type: "line"
-      });
-
-      $("body").css("opacity", "");
-
-      $("#modal-chart").modal("show");
-    });
-  });
-});
-
-/* ************************************************************************
+/**
  *
  */
 function callBackAlert() {
@@ -157,7 +38,7 @@ function callBackAlert() {
         }
 
         if (alerts.length > 0) {
-          $(td).html("<a href=\"#modal-alert\" data-toggle=\"modal\"><span class=\"badge badge-pill " + badge + "\">" + alerts.length + "</span></a>")
+          $(td).html("<a href=\"#modal-alert\" data-toggle=\"modal\"><span class=\"badge badge-pill " + badge + "\">" + alerts.length + "</span></a>");
         } else {
           $(td).empty();
         }
@@ -168,7 +49,7 @@ function callBackAlert() {
   });
 }
 
-/* ************************************************************************
+/**
  *
  */
 function callBackStatus() {
@@ -213,7 +94,7 @@ function callBackStatus() {
   });
 }
 
-/* ************************************************************************
+/**
  *
  */
 function callBackDisk() {
@@ -245,7 +126,7 @@ function callBackDisk() {
   });
 }
 
-/* ************************************************************************
+/**
  *
  */
 function callBackCPU() {
@@ -276,7 +157,7 @@ function callBackCPU() {
   });
 }
 
-/* ************************************************************************
+/**
  *
  */
 function callBackRAM() {
@@ -306,3 +187,125 @@ function callBackRAM() {
     });
   });
 }
+
+/**
+ *
+ */
+$(document).ready(function () {
+  /*var intervalAlert = window.setInterval(callBackAlert, (5*60)*1000);*/ callBackAlert();
+  /*var intervalStatus = window.setInterval(callBackStatus, (15*60)*1000);*/ callBackStatus();
+  /*var intervalDisk = window.setInterval(callBackDisk, (5*60)*1000);*/ callBackDisk();
+  /*var intervalCPU = window.setInterval(callBackCPU, (5*60)*1000);*/ callBackCPU();
+  /*var intervalRAM = window.setInterval(callBackRAM, (5*60)*1000);*/ callBackRAM();
+
+  $("#modal-info").on("show.bs.modal", function (event) {
+    var vps = $(event.relatedTarget).closest("tr").data("vps");
+    var params = {
+      "info": 1,
+      "time": Date.now(),
+      vps
+    };
+
+    $("#modal-info .modal-title").empty().html("<i class=\"fa fa-info-circle\" aria-hidden=\"true\"></i> " + vps);
+    $("#modal-info .modal-body").empty().load("vps-xhr.php", params);
+  });
+
+  $("#modal-alert").on("show.bs.modal", function (event) {
+    var tr = $(event.relatedTarget).closest("tr");
+    var vps = $(tr).data("vps");
+    var alerts = $(tr).data("alerts");
+
+    $("#modal-alert .modal-title").empty().html("<i class=\"fa fa-bell\" aria-hidden=\"true\"></i> " + vps);
+    $("#modal-alert .modal-body > table > tbody").empty();
+    for (var i = 0; i < alerts.length; i++) {
+      var row = document.createElement("tr");
+
+      $(row).append("<td>" + new Date(alerts[i].startDate).toString() + "</td>");
+      $(row).append("<td>" + alerts[i].reference + "</td>");
+      $(row).append("<td><strong>" + alerts[i].title + "</strong><br>" + alerts[i].details + "</td>");
+      $(row).append("<td>" + alerts[i].status + (alerts[i].status === "inProgress" ? " (" + alerts[i].progress + "%)" : "") + "</td>");
+      $(row).append("<td>" + alerts[i].type + "</td>");
+      $(row).append("<td>" + alerts[i].impact + "</td>");
+
+      $("#modal-alert .modal-body > table > tbody").append(row);
+    }
+  });
+
+  $("a[href='#disk-chart'], a[href='#cpu-chart'], a[href='#ram-chart']").on("click", function (event) {
+    event.preventDefault();
+
+    $("body").css("opacity", "0.3");
+
+    var vps = $(this).closest("tr").data("vps");
+    var title = vps;
+
+    var params = {
+      "time": Date.now(),
+      vps
+    };
+    if ($(this).is("a[href='#disk-chart']")) {
+      params["disk-chart"] = 1;
+      title += " (Disk)";
+    } else if ($(this).is("a[href='#cpu-chart']")) {
+      params["cpu-chart"] = 1;
+      title += " (CPU)";
+    } else if ($(this).is("a[href='#ram-chart']")) {
+      params["ram-chart"] = 1;
+      title += " (RAM)";
+    }
+
+    $.getJSON("vps-xhr.php", params, function (json) {
+      var ctx = $("#chart");
+
+      var data = {
+        datasets: [
+          {
+            backgroundColor: "rgba(255,0,0,0.3)",
+            borderColor: "rgba(255,0,0,0.7)",
+            label: "Max (" + json[0]["max"]["unit"] + ")",
+            data: json[0]["max"]["values"],
+            fill: false,
+            pointRadius: 0
+          },
+          {
+            backgroundColor: "rgba(0,128,255,0.3)",
+            borderColor: "rgba(0,128,255,0.7)",
+            label: "Used (" + json[0]["used"]["unit"] + ")",
+            data: json[0]["used"]["values"],
+            fill: true,
+            pointRadius: 0
+          }
+        ]
+      };
+
+      if (chart !== null) { chart.destroy(); }
+      chart = new Chart(ctx, {
+          data,
+          options: {
+            scales: {
+              xAxes: [{
+                time: {
+                  unit: "day"
+                },
+                type: "time"
+              }],
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            },
+            title: {
+              display: true,
+              text: title
+            }
+          },
+          type: "line"
+      });
+
+      $("body").css("opacity", "");
+
+      $("#modal-chart").modal("show");
+    });
+  });
+});
