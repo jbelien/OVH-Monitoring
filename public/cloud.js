@@ -138,9 +138,9 @@ $(document).ready(function() {
   });
 
   $("#modal-alert").on("show.bs.modal", function (event) {
-    var tr = $(event.relatedTarget).closest("tr")
+    var tr = $(event.relatedTarget).closest("tr");
     var instance = $(tr).data("instance");
-    var alerts = $(tr).data("alerts")
+    var alerts = $(tr).data("alerts");
 
     $("#modal-alert .modal-title").empty().html("<i class=\"fa fa-bell\" aria-hidden=\"true\"></i> " + instance);
     $("#modal-alert .modal-body > table > tbody").empty();
@@ -168,8 +168,8 @@ $(document).ready(function() {
     var title = instance;
 
     var params = {
-      "instance": instance,
-      "project": project,
+      instance,
+      project,
       "time": Date.now()
     };
     if ($(this).is("a[href='#disk-chart']")) {
@@ -209,7 +209,7 @@ $(document).ready(function() {
 
       if (chart !== null) { chart.destroy(); }
       chart = new Chart(ctx, {
-          data: data,
+          data,
           options: {
             scales: {
               xAxes: [{
