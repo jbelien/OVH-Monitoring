@@ -2,7 +2,7 @@ FROM php:7.3.6-apache@sha256:7fcbf93d7edfe3b524794b4ee9dfa05d973164af0fd233dd8de
 
 RUN apt-get update && apt-get install -y \
 		git \
-		zip unzip zlib1g-dev \
+		zip unzip zlib1g-dev libzip-dev \
 		libgettextpo-dev \
 	--no-install-recommends \
 	&& apt-get clean \
