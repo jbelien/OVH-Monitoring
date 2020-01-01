@@ -75,18 +75,18 @@ elseif (isset($_GET['disk-chart'], $_GET['vps'])) {
             $values = [];
             foreach ($max['values'] as $v) {
                 $values[] = [
-          'x' => date('c', $v['timestamp']),
-          'y' => $v['value'],
-        ];
+                    'x' => date('c', $v['timestamp']),
+                    'y' => $v['value'],
+                ];
             }
             $max['values'] = $values;
 
             $values = [];
             foreach ($used['values'] as $v) {
                 $values[] = [
-          'x' => date('c', $v['timestamp']),
-          'y' => $v['value'],
-        ];
+                    'x' => date('c', $v['timestamp']),
+                    'y' => $v['value'],
+                ];
             }
             $used['values'] = $values;
 
@@ -150,18 +150,18 @@ elseif (isset($_GET['cpu-chart'], $_GET['vps'])) {
         $values = [];
         foreach ($max['values'] as $v) {
             $values[] = [
-        'x' => date('c', $v['timestamp']),
-        'y' => $v['value'],
-      ];
+                'x' => date('c', $v['timestamp']),
+                'y' => $v['value'],
+            ];
         }
         $max['values'] = $values;
 
         $values = [];
         foreach ($used['values'] as $v) {
             $values[] = [
-        'x' => date('c', $v['timestamp']),
-        'y' => $v['value'],
-      ];
+                'x' => date('c', $v['timestamp']),
+                'y' => $v['value'],
+            ];
         }
         $used['values'] = $values;
 
@@ -224,18 +224,18 @@ elseif (isset($_GET['ram-chart'], $_GET['vps'])) {
         $values = [];
         foreach ($max['values'] as $v) {
             $values[] = [
-        'x' => date('c', $v['timestamp']),
-        'y' => $v['value'],
-      ];
+                'x' => date('c', $v['timestamp']),
+                'y' => $v['value'],
+            ];
         }
         $max['values'] = $values;
 
         $values = [];
         foreach ($used['values'] as $v) {
             $values[] = [
-        'x' => date('c', $v['timestamp']),
-        'y' => $v['value'],
-      ];
+                'x' => date('c', $v['timestamp']),
+                'y' => $v['value'],
+            ];
         }
         $used['values'] = $values;
 

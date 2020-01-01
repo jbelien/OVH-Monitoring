@@ -25,9 +25,9 @@ foreach ($status as $s) {
         }
         if (!isset($result[$s['impactedService']][$s['uuid']])) {
             $result[$s['impactedService']][$s['uuid']] = [
-        'status' => null,
-        'alerts' => [],
-      ];
+                'status' => null,
+                'alerts' => [],
+            ];
         }
 
         $result[$s['impactedService']][$s['uuid']]['alerts'][] = $s;
@@ -50,9 +50,9 @@ foreach ($status as $s) {
     } else {
         if (!isset($result[$s['impactedService']])) {
             $result[$s['impactedService']] = [
-        'status' => null,
-        'alerts' => [],
-      ];
+                'status' => null,
+                'alerts' => [],
+            ];
         }
 
         $result[$s['impactedService']]['alerts'][] = $s;
