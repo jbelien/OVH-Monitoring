@@ -1,4 +1,4 @@
-FROM php:7.4.2-apache@sha256:d4eeb833988035ace27b49127136fe960320aa29824d914aa65c76daf501ec82
+FROM php:7.4.3-apache@sha256:604c8dd36d734deb93193d79daa09ae0bd3ca05ea51deb909ffb218e34fa5cd5
 
 RUN apt-get update && apt-get install -y \
 		git \
