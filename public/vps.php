@@ -14,7 +14,7 @@ if (!file_exists($cache) || filemtime($cache) < (time() - 7 * 24 * 60 * 60) || i
 
         $_v['infos'] = $ovh->get('/vps/'.$v.'/serviceInfos');
 
-        if ($_v['infos']['status'] === 'ok') {
+        if (!$_v['state'] === 'maintenance' && $_v['infos']['status'] === 'ok') {
             $_v['distribution'] = $ovh->get('/vps/'.$v.'/distribution');
             $_v['ipAddresses'] = $ovh->get('/vps/'.$v.'/ips');
         }
