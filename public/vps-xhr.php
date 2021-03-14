@@ -266,9 +266,9 @@ elseif (isset($_REQUEST['info'], $_REQUEST['vps'])) {
         $diff = $d1->diff($d2); ?>
   <table class="table table-sm table-striped">
     <tbody>
-      <tr<?= (in_array($vps->infos->status, ['expired', 'unPaid']) ? ' class="text-danger"' : '') ?>>
+      <tr<?= ($vps->state === 'maintenance' || in_array($vps->infos->status, ['expired', 'unPaid']) ? ' class="text-danger"' : '') ?>>
         <th><i class="fa fa-fw fa-circle" aria-hidden="true"></i> <?= _('Status') ?></th>
-        <td><?= $vps->infos->status ?></td>
+        <td><?= ($vps->state === 'maintenance' ? $vps->state : $vps->infos->status) ?></td>
       </tr>
       <tr>
         <th><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> <?= _('Creation') ?></th>
