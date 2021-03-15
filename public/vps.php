@@ -140,7 +140,7 @@ foreach ($vps as $v) {
         } ?>
             <td style="vertical-align: middle;" class="text-nowrap text-right"><?= ($v->memoryLimit / 1024) ?> Go</td>
 <?php if (!in_array($v->infos->status, ['expired', 'unPaid'])) {
-        ?>
+            ?>
             <td style="vertical-align: middle;" class="text-nowrap text-right ram-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#ram-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
             <td style="vertical-align: middle;" class="text-nowrap">
@@ -154,14 +154,14 @@ foreach ($vps as $v) {
             </td>
 <?php
         } else {
-        ?>
+            ?>
             <td colspan="2"></td>
             <td></td>
 <?php
         } ?>
           </tr>
 <?php
-    } ?>
+} ?>
         </tbody>
         <tfoot>
           <tr>
