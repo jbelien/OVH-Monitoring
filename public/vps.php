@@ -20,7 +20,7 @@ if (!file_exists($cache) || filemtime($cache) < (time() - 7 * 24 * 60 * 60) || i
 
         $_v['infos'] = $ovh->get('/vps/'.$v.'/serviceInfos');
 
-        if (!$_v['state'] === 'maintenance' && $_v['infos']['status'] === 'ok') {
+        if ($_v['state'] !== 'maintenance' && $_v['infos']['status'] === 'ok') {
             $_v['distribution'] = $ovh->get('/vps/'.$v.'/distribution');
             $_v['ipAddresses'] = $ovh->get('/vps/'.$v.'/ips');
         }
@@ -79,7 +79,7 @@ foreach ($vps as $v) {
     $d2 = new DateTime($v->infos->expiration);
     $diff = $d1->diff($d2);
     $expiration = ($diff->days <= 30); ?>
-          <tr data-vps="<?= $v->name ?>"<?= (in_array($v->infos->status, ['expired', 'unPaid']) ? ' class="table-danger"' : '') ?>>
+          <tr data-vps="<?= $v->name ?>"<?= ($v->state === 'maintenance' || in_array($v->infos->status, ['expired', 'unPaid']) ? ' class="table-danger"' : '') ?>>
             <th class="text-nowrap">
 <?php if ($expiration === true && $v->infos->renewalType === 'manual') {
         ?>
@@ -107,37 +107,46 @@ foreach ($vps as $v) {
         } ?>
               </ul>
 <?php
-    } ?>
+    } else { ?>
+      <span class="unknow-data">Unknown</span>
+<?php
+        } ?>
             </td>
             <td style="text-nowrap"><?= $v->zone ?></td>
             <td class="text-nowrap"><?= $v->model->offer ?><br><em class="small"><?= $v->model->version ?> - <?= $v->model->name ?></em></td>
+<?php if (isset($v->distribution)) {
+            ?>
             <td style="vertical-align: middle;"><?= (isset($v->distribution) ? $v->distribution->name : '') ?></td>
             <td style="vertical-align: middle;" class="text-nowrap"><?= (isset($v->distribution) ? $v->distribution->bitFormat.' bits' : '') ?></td>
+<?php
+        } else { ?>
+            <td colspan="2" style="vertical-align: middle;"><span class="unknow-data">Unknown</span></td>
+<?php
+        } ?>
+             
             <td style="vertical-align: middle;" class="text-nowrap text-right"><?= $v->model->disk ?> Go</td>
 <?php if (!in_array($v->infos->status, ['expired', 'unPaid'])) {
-        ?>
+            ?>
             <td style="vertical-align: middle;" class="text-nowrap text-right disk-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#disk-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
 <?php
-    } else {
-        ?>
+        } else { ?>
             <td colspan="2"></td>
 <?php
-    } ?>
+        } ?>
             <td style="vertical-align: middle;" class="text-right"><?= $v->vcore ?></td>
 <?php if (!in_array($v->infos->status, ['expired', 'unPaid'])) {
-        ?>
+            ?>
             <td style="vertical-align: middle;" class="text-nowrap text-right cpu-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#cpu-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
 <?php
-    } else {
-        ?>
+        } else { ?>
             <td colspan="2"></td>
 <?php
-    } ?>
+        } ?>
             <td style="vertical-align: middle;" class="text-nowrap text-right"><?= ($v->memoryLimit / 1024) ?> Go</td>
 <?php if (!in_array($v->infos->status, ['expired', 'unPaid'])) {
-        ?>
+            ?>
             <td style="vertical-align: middle;" class="text-nowrap text-right ram-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#ram-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
             <td style="vertical-align: middle;" class="text-nowrap">
@@ -150,16 +159,15 @@ foreach ($vps as $v) {
               <span class="badge badge-secondary status-tools">tools</span>
             </td>
 <?php
-    } else {
-        ?>
+        } else {
+            ?>
             <td colspan="2"></td>
             <td></td>
 <?php
-    } ?>
+        } ?>
           </tr>
 <?php
-}
-?>
+} ?>
         </tbody>
         <tfoot>
           <tr>
