@@ -113,8 +113,7 @@ foreach ($vps as $v) {
             <td style="vertical-align: middle;"><?= (isset($v->distribution) ? $v->distribution->name : '') ?></td>
             <td style="vertical-align: middle;" class="text-nowrap"><?= (isset($v->distribution) ? $v->distribution->bitFormat.' bits' : '') ?></td>
 <?php
-    } else {
-        ?>
+        } else { ?>
             <td colspan="2" style="vertical-align: middle;"><span class="unknow-data">Unknown</span></td>
 <?php
         } ?>
@@ -125,11 +124,10 @@ foreach ($vps as $v) {
             <td style="vertical-align: middle;" class="text-nowrap text-right disk-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#disk-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
 <?php
-    } else {
-        ?>
+        } else { ?>
             <td colspan="2"></td>
 <?php
-    } ?>
+        } ?>
             <td style="vertical-align: middle;" class="text-right"><?= $v->vcore ?></td>
 <?php if (!in_array($v->infos->status, ['expired', 'unPaid'])) {
         ?>
