@@ -2,7 +2,13 @@
 require '../vendor/autoload.php';
 
 $ini = parse_ini_file('../monitoring.ini');
-$ovh = new \Ovh\Api($ini['application_key'], $ini['application_secret'], $ini['endpoint'], $ini['consumer_key']);
+$timeout = $ini['timeout'] ?? 0;
+$client = new \GuzzleHttp\Client([
+    'connect_timeout' => $timeout,
+    'read_timeout'    => $timeout,
+    'timeout'         => $timeout,
+]);
+$ovh = new \Ovh\Api($ini['application_key'], $ini['application_secret'], $ini['endpoint'], $ini['consumer_key'], $client);
 
 $cache = '../cache/vps.json';
 if (!file_exists($cache) || filemtime($cache) < (time() - 7 * 24 * 60 * 60) || isset($_GET['nocache'])) {
