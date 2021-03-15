@@ -120,7 +120,7 @@ foreach ($vps as $v) {
              
             <td style="vertical-align: middle;" class="text-nowrap text-right"><?= $v->model->disk ?> Go</td>
 <?php if (!in_array($v->infos->status, ['expired', 'unPaid'])) {
-        ?>
+            ?>
             <td style="vertical-align: middle;" class="text-nowrap text-right disk-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#disk-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
 <?php
@@ -130,15 +130,14 @@ foreach ($vps as $v) {
         } ?>
             <td style="vertical-align: middle;" class="text-right"><?= $v->vcore ?></td>
 <?php if (!in_array($v->infos->status, ['expired', 'unPaid'])) {
-        ?>
+            ?>
             <td style="vertical-align: middle;" class="text-nowrap text-right cpu-live"><i class="fa fa fa-spinner fa-pulse fa-fw"></i></td>
             <td style="vertical-align: middle;" class="text-nowrap text-center"><a href="#cpu-chart" style="text-decoration: none;"><i class="fa fa-line-chart" aria-hidden="true"></i></a></td>
 <?php
-    } else {
-        ?>
+        } else { ?>
             <td colspan="2"></td>
 <?php
-    } ?>
+        } ?>
             <td style="vertical-align: middle;" class="text-nowrap text-right"><?= ($v->memoryLimit / 1024) ?> Go</td>
 <?php if (!in_array($v->infos->status, ['expired', 'unPaid'])) {
         ?>
@@ -154,16 +153,15 @@ foreach ($vps as $v) {
               <span class="badge badge-secondary status-tools">tools</span>
             </td>
 <?php
-    } else {
+        } else {
         ?>
             <td colspan="2"></td>
             <td></td>
 <?php
-    } ?>
+        } ?>
           </tr>
 <?php
-}
-?>
+    } ?>
         </tbody>
         <tfoot>
           <tr>
