@@ -1,8 +1,8 @@
 [![Latest Stable Version](https://poser.pugx.org/jbelien/ovh-monitoring/v/stable)](https://packagist.org/packages/jbelien/ovh-monitoring)
 [![Total Downloads](https://poser.pugx.org/jbelien/ovh-monitoring/downloads)](https://packagist.org/packages/jbelien/ovh-monitoring)
-[![Monthly Downloads](https://poser.pugx.org/jbelien/ovh-monitoring/d/monthly.png)](https://packagist.org/packages/jbelien/ovh-monitoring)
 [![Docker build](https://img.shields.io/docker/cloud/automated/jbelien/ovh-monitoring.svg)](https://hub.docker.com/r/jbelien/ovh-monitoring/)
 [![Docker build](https://img.shields.io/docker/cloud/build/jbelien/ovh-monitoring.svg)](https://hub.docker.com/r/jbelien/ovh-monitoring/)
+[![Docker build](https://img.shields.io/docker/pulls/jbelien/ovh-monitoring.svg)](https://hub.docker.com/r/jbelien/ovh-monitoring/)
 
 # OVH-Monitoring
 
