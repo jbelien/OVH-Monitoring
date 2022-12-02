@@ -9,6 +9,6 @@
         }
     ],
     "require": {
-        "ovh/ovh": "^2.0"
+        "ovh/ovh": "^3.1"
     }
 }
